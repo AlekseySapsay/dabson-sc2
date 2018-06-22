@@ -10,4 +10,4 @@ run_game(
   maps.get("AbyssalReefLE"), [
     Bot(Race.Protoss, DabsonBot()),
     Computer(Race.Terran, Difficulty.Easy)
-  ], realtime=True)
+  ], realtime=False)
