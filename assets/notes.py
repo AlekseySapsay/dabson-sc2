@@ -58,3 +58,13 @@ run command:
 
           python -m pysc2.bin.agent --map Simple64
 
+https://github.com/Blizzard/s2client-proto#map-packs
+
+https://github.com/Blizzard/s2client-proto#map-packs
+
+http://sc2ai.net/
+
+Terran Bot for the Sc2 AI ladder at http://sc2ai.net/
+https://github.com/Archiatrus/5minBot
+^ top dog
+Q learning 
