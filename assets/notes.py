@@ -60,11 +60,29 @@ run command:
 
 https://github.com/Blizzard/s2client-proto#map-packs
 
-https://github.com/Blizzard/s2client-proto#map-packs
-
 http://sc2ai.net/
 
 Terran Bot for the Sc2 AI ladder at http://sc2ai.net/
 https://github.com/Archiatrus/5minBot
 ^ top dog
 Q learning 
+
+gym/gym/envs/mujoco/ant.py is trippy
+mujoco-py is a physics engine (need python 3 sorry dear)
+PEP8 decent python style guide
+
+import this 
+The zen of python
+self.build(PYLON, near=nexuses.first)
+
+everything is rule based at the moment 
+
+where do you want to place that nexus
+fairly complex
+must define (self) arg on all class methods 
+
+TensorFlow and Deep Learning without a PhD
+https://www.youtube.com/watch?v=zqWt8oI4gEw&list=PLJaEqitMr8tLwJzq1HDDvtkYjoRujG1lv&index=2
+
+kinoni
+CUDN 
