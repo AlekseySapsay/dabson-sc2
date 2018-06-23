@@ -86,3 +86,17 @@ https://www.youtube.com/watch?v=zqWt8oI4gEw&list=PLJaEqitMr8tLwJzq1HDDvtkYjoRujG
 
 kinoni
 CUDN 
+cuda kernal function marked by __global__
+(can be exec''d in parrallel on gpu)
+
+write kernel in c++, rest in python 
+
+
+vscode_cpp_properties.json
+browse.path,"C:\\MinGW\\lib\\gcc\\mingw32\\6.3.0"
+g++ -g main.cpp
+launch.json 
+  "miDebuggerPath": "C:\\MinGW\bin\\gdb.exe"
+  "preLaunchTask": "mybuild",
+  "program": "${workspaceFolder}/a.exe",
+
