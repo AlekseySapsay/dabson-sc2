@@ -100,3 +100,10 @@ launch.json
   "preLaunchTask": "mybuild",
   "program": "${workspaceFolder}/a.exe",
 
+
+good compilers:
+  g++ windows/linux
+  clang mac 
+
+compile CUDA code with nvcc
+nvcc add.cu -o add_cuda
