@@ -120,3 +120,13 @@ expand_now() #included method
 
 ought to build on stratergy to not just build stalkers
 self.known_enemy_units is a list
+
+A LUA file is a source code file written in Lua, 
+a light-weight programming language designed for 
+extending applications. It can be compiled into 
+a program using an ANSI C compiler. LUA files 
+may be used to customize certain applications, 
+such as the World of Warcraft and Dawn of War 
+video games.
+
+bizhawk/lua/snes for script
