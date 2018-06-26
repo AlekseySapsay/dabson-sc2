@@ -130,3 +130,7 @@ such as the World of Warcraft and Dawn of War
 video games.
 
 bizhawk/lua/snes for script
+remember to save after training! 
+  marIO/BizHawk23/Lua/SNES/DP1.state.pool 
+  ..is where the trianing data is stored ;)
+
