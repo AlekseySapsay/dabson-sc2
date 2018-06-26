@@ -118,3 +118,5 @@ bot_ai.py
 sc2\bot_ai 
 expand_now() #included method
 
+ought to build on stratergy to not just build stalkers
+self.known_enemy_units is a list
