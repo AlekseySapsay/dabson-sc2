@@ -107,3 +107,14 @@ good compilers:
 
 compile CUDA code with nvcc
 nvcc add.cu -o add_cuda
+i am mental
+alt + f10 for instagrab
+
+sentdex * * * * * great channel :)
+
+Gotta expand area + resources before going offensive 
+
+bot_ai.py
+sc2\bot_ai 
+expand_now() #included method
+
