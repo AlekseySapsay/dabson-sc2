@@ -80,5 +80,5 @@ class DabsonBot(sc2.BotAI):
 run_game(
   maps.get("AbyssalReefLE"), [
     Bot(Race.Protoss, DabsonBot()),
-    Computer(Race.Terran, Difficulty.Medium)
+    Computer(Race.Terran, Difficulty.Hard)
   ], realtime=False)
