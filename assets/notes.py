@@ -142,3 +142,14 @@ PULL5
 http://www.dabson.co/qvalent3/
 
 David arns atey hour
+data is bootooful
+https://www.youtube.com/watch?v=liJbB_0eCTo
+
+tiniest-blockchain/blockchain.py 
+
+
+sentdex 
+3Blue1Brown (math animations)
+youtube.com/user/shiffman
+tanmay bakshi
+
