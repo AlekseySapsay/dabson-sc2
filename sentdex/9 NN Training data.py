@@ -112,7 +112,7 @@ class DabsonBot(sc2.BotAI):
     if vespene_ratio > 1.0:
       vespene_ratio = 1.0 
 
-    population_ratio = self.supply_left / supply.supply_cap 
+    population_ratio = self.supply_left / self.supply_cap 
     if population_ratio > 1.0:
       population_ratio = 1.0 
 
@@ -121,11 +121,11 @@ class DabsonBot(sc2.BotAI):
     if military_weight > 1.0:
       military_weight = 1.0
 
-    cv2.line(game_datas, (0, 19), (int(line_max * military_weight) ), 19, (250, 250, 200), 3) # worker/supply ratio
-    cv2.line(game_datas, (0, 15), (int(line_max * plausible_supply)), 15, (220, 200, 200), 3) # plausible supply (supply/200)
-    cv2.line(game_datas, (0, 11), (int(line_max * population_ratio)), 11, (150, 150, 150), 3) # population ratio (supply_left/supply)
-    cv2.line(game_datas, (0,  7), (int(line_max * vespene_ratio)   ),  7, (210, 200,   0), 3) # gas /1500
-    cv2.line(game_datas, (0,  3), (int(line_max * mineral_ratio)   ),  3, (  0, 255,  25), 3) # minerals minerals/1500
+    cv2.line(game_data, (0, 19), (int(line_max * military_weight) , 19), (250, 250, 200), 3) # worker/supply ratio
+    cv2.line(game_data, (0, 15), (int(line_max * plausible_supply), 15), (220, 200, 200), 3) # plausible supply (supply/200)
+    cv2.line(game_data, (0, 11), (int(line_max * population_ratio), 11), (150, 150, 150), 3) # population ratio (supply_left/supply)
+    cv2.line(game_data, (0,  7), (int(line_max * vespene_ratio)   ,  7), (210, 200,   0), 3) # gas /1500
+    cv2.line(game_data, (0,  3), (int(line_max * mineral_ratio)   ,  3), (  0, 255,  25), 3) # minerals minerals/1500
 
     # flip horizontally to make our final fix in numpyMatrix -> visual represent
     flipped = cv2.flip(game_data, 0)
