@@ -158,3 +158,12 @@ by dentosol
 (have example)
 
 deepminds
+  1.dont attack 
+  2.defend our base 
+  3.attack enemy buildings 
+  4.attack enemy units
+
+qlearning 
+Simplest network: CNN
+openCV = image processing library 
+with bindings for python/java/C
