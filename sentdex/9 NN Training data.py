@@ -121,6 +121,7 @@ class DabsonBot(sc2.BotAI):
     if military_weight > 1.0:
       military_weight = 1.0
 
+    #draw each line as a sideways column graph
     cv2.line(game_data, (0, 19), (int(line_max * military_weight) , 19), (250, 250, 200), 3) # worker/supply ratio
     cv2.line(game_data, (0, 15), (int(line_max * plausible_supply), 15), (220, 200, 200), 3) # plausible supply (supply/200)
     cv2.line(game_data, (0, 11), (int(line_max * population_ratio), 11), (150, 150, 150), 3) # population ratio (supply_left/supply)
@@ -214,22 +215,32 @@ class DabsonBot(sc2.BotAI):
       return self.enemy_start_locations[0]
 
   async def attack(self):
-    # {UNIT: [n to fight, n to defend]}
-    aggressive_units = {VOIDRAY: [8, 3]}
+    if len(self.units(VOIDRAY).idle) > 0:
+      choice = random.randrange(0,4)
+      target = False 
+      if self.iteration > self.do_something_after:
+        if choice == 0: # no attack 
+          wait = random.randrange(20, 165)
+          self.do_something_after = self.iteration + wait 
 
-    for UNIT in aggressive_units:
-      unitCount = self.units(UNIT).amount
-      offenceCount = aggressive_units[UNIT][0]
-      defenceCount = aggressive_units[UNIT][1]
-      idleUnits = self.units(UNIT).idle
+        elif choice == 1: # attack_unit_closest_nexus 
+          if len(self.known_enemy_units) > 0:
+            target = self.known_enemy_units.closest_to(random.choice(self.units(NEXUS)))
 
-      if unitCount > offenceCount and unitCount > defenceCount:
-        for s in idleUnits:
-          await self.do(s.attack(self.find_target(self.state)))
-      elif unitCount > defenceCount and len(self.known_enemy_units) > 0: 
-        for s in idleUnits:
-          await self.do(s.attack(random.choice(self.known_enemy_units))) 
+        elif choice == 3: # attack enemy structures
+          if len(self.known_enemy_structures) > 0:
+            target = random.choice(self.known_enemy_structures)
 
+        if target:
+          for vr in self.units(VOIDRAY).idle:
+            await self.do(vr.attack(target))
+
+        y = np.zeros(4)
+        y[choice] = 1
+        print(y)
+        self.train_data.append([y,self.flipped])
+
+      print(len(self.train_data))
 
 run_game(
   maps.get("AbyssalReefLE"), [

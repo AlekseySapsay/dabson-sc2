@@ -169,3 +169,10 @@ openCV = image processing library
 with bindings for python/java/C
 ANN''s learn patterns
 
+we use the following as training data (maybe) 
+  military_weight 
+  plausible_supply
+  population_ratio 
+  vespene_ratio 
+  mineral_ratio 
+
