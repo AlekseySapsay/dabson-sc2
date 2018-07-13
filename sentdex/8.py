@@ -1,5 +1,5 @@
 import sc2
-from sc2 import run_game, maps, Race, Difficulty 
+from sc2 import run_game, maps, Race, Difficulty, position
 from sc2.player import Bot, Computer
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
  CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY, ROBOTICSFACILITY, OBSERVER
@@ -45,17 +45,17 @@ class DabsonBot(sc2.BotAI):
           await self.do(rf.train(OBSERVER))    
 
   def random_location_variance(self, enemy_start_location):
-    x = randDelta(.2) * enemy_start_location[0]
-    y = randDelta(.2) * enemy_start_location[1]
-    x = bound(x, 0, self.game_info.map_size[0])
-    y = bound(y, 0, self.game_info.map_size[1])
+    x = enemy_start_location[0] * self.randDelta(.2)
+    y = enemy_start_location[1] * self.randDelta(.2)
+    x = self.bound(x, 0, self.game_info.map_size[0])
+    y = self.bound(y, 0, self.game_info.map_size[1])
     go_to = position.Point2(position.Pointlike((x,y)))
     return go_to
 
-  def randDelta(magnitude): #pop pop 
-    return 1 + random.randrange(-magnitude, magnitdue)
+  def randDelta(self, magnitude): #pop pop 
+    return 1 + random.uniform(-magnitude, magnitude)
 
-  def bound( val, minVal, maxVal ):
+  def bound(self, val, minVal, maxVal ):
     if val < minVal:
       return minVal
     if val > maxVal:
@@ -92,17 +92,17 @@ class DabsonBot(sc2.BotAI):
       if not enemy_unit.is_structure:
         worker_names = ["probe", "scv", "drone"]
 
-      #if that unit is a worker 
-      pos = enemy_unit.position 
-      if enemy_unit.name.lower() in worker_names: 
-        cv2.circle(game_data, (int(pos[0]), int(pos[1])), 1, (55, 0, 155), -1)
-      else: 
-        cv2.circle(game_data, (int(pos[0]), int(pos[1])), 3, (50, 0, 215), -1)
+        #if that unit is a worker 
+        pos = enemy_unit.position 
+        if enemy_unit.name.lower() in worker_names: 
+          cv2.circle(game_data, (int(pos[0]), int(pos[1])), 1, (55, 0, 155), -1)
+        else: 
+          cv2.circle(game_data, (int(pos[0]), int(pos[1])), 3, (50, 0, 215), -1)
 
     for obs in self.units(OBSERVER).ready:
       pos = obs.position 
       cv2.circle(game_data, (int(pos[0]), int(pos[1])), 1, (255, 255, 255), -1)
-    
+
     # flip horizontally to make our final fix in numpyMatrix -> visual represent
     flipped = cv2.flip(game_data, 0)
     resized = cv2.resize(flipped, dsize=None, fx=2, fy=2)
@@ -154,14 +154,27 @@ class DabsonBot(sc2.BotAI):
       elif len(self.units(GATEWAY)) < 1:
         if self.can_afford(GATEWAY) and not self.already_pending(GATEWAY):
           await self.build(GATEWAY, near=pylon)
+      
+      if self.isReadyForRoboticsFacility():
+        await self.build(ROBOTICSFACILITY, near=pylon)
 
-      isStargateUndercap = len(self.units(STARGATE)) < self.time
-      isStargateAffordable = self.can_afford(STARGATE) 
-      isStargateNotPending = not self.already_pending(STARGATE)
-      isStargateReady = isStargateUndercap and isStargateAffordable and isStargateNotPending
-      isCyberReady = self.units(CYBERNETICSCORE).ready.exists
-      if isCyberReady and isStargateReady:
+      if self.isReadyForStargate():
         await self.build(STARGATE, near=pylon)
+
+  def isCyberReady(self):
+    return self.units(CYBERNETICSCORE).ready.exists
+
+  def isReadyForRoboticsFacility(self):
+    noRFyet = len(self.units(ROBOTICSFACILITY)) < 1
+    isRFAffordable = self.can_afford(ROBOTICSFACILITY)
+    isRFNotPending = not self.already_pending(ROBOTICSFACILITY)
+    return self.isCyberReady() and noRFyet and isRFAffordable and isRFNotPending
+
+  def isReadyForStargate(self):
+    isStargateUndercap = len(self.units(STARGATE)) < self.time
+    isStargateAffordable = self.can_afford(STARGATE) 
+    isStargateNotPending = not self.already_pending(STARGATE)
+    return self.isCyberReady() and isStargateUndercap and isStargateAffordable and isStargateNotPending
 
   async def build_offensive_force(self):
     for sg in self.units(STARGATE).ready.noqueue:
