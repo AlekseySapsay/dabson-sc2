@@ -1,5 +1,5 @@
 import sc2
-from sc2 import run_game, maps, Race, Difficulty, position
+from sc2 import run_game, maps, Race, Difficulty, position, Result
 from sc2.player import Bot, Computer
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
  CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY, ROBOTICSFACILITY, OBSERVER
@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import time
 
-HEADLESS = True
+HEADLESS = False #when true, will not render visualisation window
 
 # os.environ["SC2PATH"] = 'C:/starcraft/path/goes/here'
 # ~165 iterations per minute #self.f = open("gamedata.txt", "w+")
@@ -22,7 +22,7 @@ class DabsonBot(sc2.BotAI):
     self.train_data = []
 
   def on_end(self, game_result):
-    print('--- on_end called ---')
+    print('--- on_end() called ---')
     print(game_result)
 
     if game_result == Result.Victory:
@@ -141,9 +141,11 @@ class DabsonBot(sc2.BotAI):
 
     # flip horizontally to make our final fix in numpyMatrix -> visual represent
     self.flipped = cv2.flip(game_data, 0)
-    resized = cv2.resize(self.flipped, dsize=None, fx=2, fy=2)
-    cv2.imshow('Intel', resized)
-    cv2.waitKey(1)
+
+    if not HEADLESS:
+      resized = cv2.resize(self.flipped, dsize=None, fx=2, fy=2)
+      cv2.imshow('Intel', resized)
+      cv2.waitKey(1)
 
   async def build_workers(self):
     workerCount = len(self.units(PROBE)) 
@@ -175,7 +177,7 @@ class DabsonBot(sc2.BotAI):
           await self.do( worker.build(ASSIMILATOR, vespene) )
 
   async def expand(self):
-    if self.units(NEXUS).amount < 3 and self.can_afford(NEXUS):
+    if self.units(NEXUS).amount < self.decimalTime and self.can_afford(NEXUS):
       await self.expand_now()
 
   async def offensive_force_buildings(self):
@@ -248,7 +250,7 @@ class DabsonBot(sc2.BotAI):
 
         y = np.zeros(4)
         y[choice] = 1
-        print(y)
+        #print(y)
         self.train_data.append([y,self.flipped])
 
       print(len(self.train_data))
@@ -256,5 +258,5 @@ class DabsonBot(sc2.BotAI):
 run_game(
   maps.get("AbyssalReefLE"), [
     Bot(Race.Protoss, DabsonBot()),
-    Computer(Race.Terran, Difficulty.Hard)
+    Computer(Race.Terran, Difficulty.Easy)
   ], realtime=False)
