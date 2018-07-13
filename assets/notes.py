@@ -153,3 +153,8 @@ sentdex
 youtube.com/user/shiffman
 tanmay bakshi
 
+python-sc2 
+by dentosol 
+(have example)
+
+deepminds

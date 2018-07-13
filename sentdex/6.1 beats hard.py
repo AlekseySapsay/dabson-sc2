@@ -4,7 +4,6 @@ from sc2.player import Bot, Computer
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
  CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY
 import random
-from examples.protoss.cannon_rush import CannonRushBot
 
 # ~165 iterations per minute 
 class DabsonBot(sc2.BotAI):
@@ -121,5 +120,5 @@ class DabsonBot(sc2.BotAI):
 run_game(
   maps.get("AbyssalReefLE"), [
     Bot(Race.Protoss, DabsonBot()),
-    Bot(Race.Protoss, CannonRushBot()) #Computer(Race.Terran, Difficulty.Hard)
+    Computer(Race.Terran, Difficulty.Hard)
   ], realtime=False)
