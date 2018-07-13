@@ -167,3 +167,5 @@ qlearning
 Simplest network: CNN
 openCV = image processing library 
 with bindings for python/java/C
+ANN''s learn patterns
+
