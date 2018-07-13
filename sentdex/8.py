@@ -2,7 +2,7 @@ import sc2
 from sc2 import run_game, maps, Race, Difficulty 
 from sc2.player import Bot, Computer
 from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
- CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY
+ CYBERNETICSCORE, STALKER, STARGATE, VOIDRAY, ROBOTICSFACILITY, OBSERVER
 import random
 import cv2
 import numpy as np
@@ -20,6 +20,7 @@ class DabsonBot(sc2.BotAI):
   async def on_step(self, iteration):
     self.iteration = iteration
     self.time = self.iteration / self.ITERATIONS_PER_MINUTE
+    await self.scout()
     await self.distribute_workers()
     await self.build_workers()
     await self.build_pylons()
@@ -30,17 +31,49 @@ class DabsonBot(sc2.BotAI):
     await self.intel()
     await self.attack()
 
+  async def scout(self):
+    if len(self.units(OBSERVER)) > 0:
+      scout = self.units(OBSERVER)[0]
+      if scout.is_idle:
+        enemy_location = self.enemy_start_locations[0]
+        move_to = self.random_location_variance(enemy_location)
+        print(move_to)
+        await self.do(scout.move(move_to))
+    else:
+      for rf in self.units(ROBOTICSFACILITY).ready.noqueue: 
+        if self.can_afford(OBSERVER) and self.supply_left > 0:
+          await self.do(rf.train(OBSERVER))    
+
+  def random_location_variance(self, enemy_start_location):
+    x = randDelta(.2) * enemy_start_location[0]
+    y = randDelta(.2) * enemy_start_location[1]
+    x = bound(x, 0, self.game_info.map_size[0])
+    y = bound(y, 0, self.game_info.map_size[1])
+    go_to = position.Point2(position.Pointlike((x,y)))
+    return go_to
+
+  def randDelta(magnitude): #pop pop 
+    return 1 + random.randrange(-magnitude, magnitdue)
+
+  def bound( val, minVal, maxVal ):
+    if val < minVal:
+      return minVal
+    if val > maxVal:
+      return maxVal
+    return val
+
   async def intel(self):
     game_data = np.zeros((self.game_info.map_size[1], self.game_info.map_size[0], 3), np.uint8)
-    draw_dict = {       #size #color #draw from largest to smallest good idea
-      NEXUS:            [15, (  0, 255, 0),  1],
-      STARGATE:         [ 5, (255,   0, 0), -1],
-      PYLON:            [ 3, ( 20, 235, 0), -1],
-      GATEWAY:          [ 3, (200, 100, 0), -1],
-      CYBERNETICSCORE:  [ 3, (150, 150, 0), -1],
-      VOIDRAY:          [ 3, (255, 100, 0), -1],
-      ASSIMILATOR:      [ 2, ( 55, 200, 0), -1],
-      PROBE:            [ 1, ( 55, 200, 0), -1],
+    draw_dict = {       #size #color #strokeFill #draw from largest to smallest good idea
+      NEXUS:            [15, (  0, 255,   0),  1],
+      STARGATE:         [ 5, (255,   0,   0), -1],
+      PYLON:            [ 3, ( 20, 235,   0), -1],
+      GATEWAY:          [ 3, (200, 100,   0), -1],
+      CYBERNETICSCORE:  [ 3, (150, 150,   0), -1],
+      VOIDRAY:          [ 3, (255, 100,   0), -1],
+      OBSERVER:         [ 3, (255, 255, 255), -1],
+      ASSIMILATOR:      [ 2, ( 55, 200,   0), -1],
+      PROBE:            [ 1, ( 55, 200,   0), -1],
     }
 
     for unit_type in draw_dict:
@@ -49,10 +82,28 @@ class DabsonBot(sc2.BotAI):
         u = draw_dict[unit_type]
         cv2.circle(game_data, (int(pos[0]), int(pos[1])), u[0], u[1], u[2]) #-1 for solid fill, no stroke
 
-    # for nexus in self.units(NEXUS):
-    #   nex_pos = nexus.position
-    #   cv2.circle(game_data, (int(nex_pos[0]), int(nex_pos[1])), 10, (0, 255, 0), -1) #data, coord coord, px_size, color, line_width(-1 for no stroke)
+    main_base_names = ["nexus", "supplydepot", "hatchery"]
+    for enemy_building in self.known_enemy_structures:
+      pos = enemy_building.position
+      if enemy_building.name.lower() not in main_base_names:
+        cv2.circle(game_data, (int(pos[0]), int(pos[1])), 15, (0, 0, 255), -1)
 
+    for enemy_unit in self.known_enemy_units:
+      if not enemy_unit.is_structure:
+        worker_names = ["probe", "scv", "drone"]
+
+      #if that unit is a worker 
+      pos = enemy_unit.position 
+      if enemy_unit.name.lower() in worker_names: 
+        cv2.circle(game_data, (int(pos[0]), int(pos[1])), 1, (55, 0, 155), -1)
+      else: 
+        cv2.circle(game_data, (int(pos[0]), int(pos[1])), 3, (50, 0, 215), -1)
+
+    for obs in self.units(OBSERVER).ready:
+      pos = obs.position 
+      cv2.circle(game_data, (int(pos[0]), int(pos[1])), 1, (255, 255, 255), -1)
+    
+    # flip horizontally to make our final fix in numpyMatrix -> visual represent
     flipped = cv2.flip(game_data, 0)
     resized = cv2.resize(flipped, dsize=None, fx=2, fy=2)
     cv2.imshow('Intel', resized)
