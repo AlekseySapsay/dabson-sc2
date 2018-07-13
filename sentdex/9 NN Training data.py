@@ -6,20 +6,31 @@ from sc2.constants import NEXUS, PROBE, PYLON, ASSIMILATOR, GATEWAY, \
 import random
 import cv2
 import numpy as np
+import time
 
-# ~165 iterations per minute 
+HEADLESS = True
+
+# os.environ["SC2PATH"] = 'C:/starcraft/path/goes/here'
+# ~165 iterations per minute #self.f = open("gamedata.txt", "w+")
 class DabsonBot(sc2.BotAI):
   def __init__(self):
     self.ITERATIONS_PER_MINUTE = 165
     self.MAX_WORKERS = 64
     self.RECOMENDED_WORKERS_PER_NEXUS = 16
-    self.iteration = 0
-    self.time = 0 #in decimal minutes (e 1.5 = 1minute 30seconds)
-    #self.f = open("gamedata.txt", "w+")
+    self.decimalTime = 0 #in decimal minutes (e 1.5 = 1minute 30seconds)
+    self.do_something_after = 0
+    self.train_data = []
+
+  def on_end(self, game_result):
+    print('--- on_end called ---')
+    print(game_result)
+
+    if game_result == Result.Victory:
+      np.save("train_data/{}.npy".format(str(int(time.time()))), np.array(self.train_data))
 
   async def on_step(self, iteration):
     self.iteration = iteration
-    self.time = self.iteration / self.ITERATIONS_PER_MINUTE
+    self.decimalTime = self.iteration / self.ITERATIONS_PER_MINUTE
     await self.scout()
     await self.distribute_workers()
     await self.build_workers()
@@ -129,8 +140,8 @@ class DabsonBot(sc2.BotAI):
     cv2.line(game_data, (0,  3), (int(line_max * mineral_ratio)   ,  3), (  0, 255,  25), 3) # minerals minerals/1500
 
     # flip horizontally to make our final fix in numpyMatrix -> visual represent
-    flipped = cv2.flip(game_data, 0)
-    resized = cv2.resize(flipped, dsize=None, fx=2, fy=2)
+    self.flipped = cv2.flip(game_data, 0)
+    resized = cv2.resize(self.flipped, dsize=None, fx=2, fy=2)
     cv2.imshow('Intel', resized)
     cv2.waitKey(1)
 
@@ -168,7 +179,7 @@ class DabsonBot(sc2.BotAI):
       await self.expand_now()
 
   async def offensive_force_buildings(self):
-    #print(self.time) #test the time
+    #print(self.decimalTime) #test the time
     if self.units(PYLON).ready.exists:
       pylon = self.units(PYLON).ready.random
 
@@ -196,7 +207,7 @@ class DabsonBot(sc2.BotAI):
     return self.isCyberReady() and noRFyet and isRFAffordable and isRFNotPending
 
   def isReadyForStargate(self):
-    isStargateUndercap = len(self.units(STARGATE)) < self.time
+    isStargateUndercap = len(self.units(STARGATE)) < self.decimalTime
     isStargateAffordable = self.can_afford(STARGATE) 
     isStargateNotPending = not self.already_pending(STARGATE)
     return self.isCyberReady() and isStargateUndercap and isStargateAffordable and isStargateNotPending

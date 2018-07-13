@@ -176,3 +176,8 @@ we use the following as training data (maybe)
   vespene_ratio 
   mineral_ratio 
 
+NN produces something like 
+[1,0,0,0]
+
+find equiv game time for sent
+daniel forked the pysc2 package and added an on-end method 
