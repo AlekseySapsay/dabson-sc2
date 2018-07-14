@@ -184,3 +184,21 @@ For in game time you can use self.state.game_loop which is 22.4 per second﻿
 Daniel forked the pysc2 package and added an on-end method 
 https://github.com/daniel-kukiela/python-sc2
 
+Convolutional Neural Nets are 
+fake networks 
+
+Convolution is the act of taking 
+the original data, and creating 
+feature maps from it. Pooling is 
+down-sampling, most often in the 
+form of "max-pooling," where we 
+select a region, and then take the 
+maximum value in that region, and 
+that becomes the new value for the 
+entire region
+
+Pooling = downsampling 
+Dropout = tossing out data (no biasing nodes in the network, makes things more robust)
+
+'relu' is rectify Lienar
+tensorboard is usefull for logging trends
