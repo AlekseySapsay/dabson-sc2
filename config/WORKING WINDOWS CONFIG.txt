@@ -1,0 +1,41 @@
+## How to setup env on Windows 8.1
+  Conda --version   4.5.8
+  python --version  3.6.5 (dont go 3.7+, websockets breaks tensorflow!)
+  tensorflow ver    1.8
+  tensorflow-gpu    1.8
+
+(step 1 might be optional if handled by conda tensorflow-gpu install)
+1. Install nvidia cuda.v9+cuDNN and put these on your windows path (by default, the cuDNN is named cuda, I've renamed the specific version here)
+  C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\extras\CUPTI\libx64
+  C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\libnvvp
+  C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.0\bin
+  C:\Program Files\NVIDIA GPU Computing Toolkit\cuDNN-cuda-v9-win10\bin
+  C:\Program Files\NVIDIA GPU Computing Toolkit\cuDNN-cuda-v9-win10\lib\x64
+
+2. Uninstall all tensorflow versions using pip / anaconda, ensure they're gone with 
+  conda list tensorflow 
+
+3. Then re-install tensorflow version 1.8.0 using 
+  conda install tensorflow=1.8
+
+4. test by opening python:
+  import tensorflow as tf 
+  import keras 
+  print(tf.__version)
+
+
+## Hardcore (gpu version)
+  conda install tensorflow-gpu 
+    cudnn-7.1.4 
+    tensorflow-gpu-base-1.8.0
+    cudatoolkit-9.0
+    tensorflow-gpu-1.8.0 
+
+Validating a tensorflow-gpu install (python):
+
+  from tensorflow.python.client import device_lib
+  print(device_lib.list_local_devices())
+
+  GeForce GTX 970, pci bus id: 0000:01:00.0, compute capability: 5.2"
+  WIN!
+
