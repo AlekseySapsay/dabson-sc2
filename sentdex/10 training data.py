@@ -10,6 +10,8 @@ import time
 
 HEADLESS = False #when true, will not render visualisation window
 
+# training data in 10train_data from https://drive.google.com/file/d/1cO0BmbUhE2HsUC5ttQrLQC_wLTdCn2-u/view
+# (not on repo)
 # os.environ["SC2PATH"] = 'C:/starcraft/path/goes/here'
 # ~165 iterations per minute #self.f = open("gamedata.txt", "w+")
 class DabsonBot(sc2.BotAI):

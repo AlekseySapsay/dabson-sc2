@@ -1,0 +1,38 @@
+name: tensorflow
+channels:
+  - defaults
+dependencies:
+  - absl-py=0.2.2=py36_0
+  - astor=0.6.2=py36_0
+  - blas=1.0=mkl
+  - bleach=1.5.0=py36_0
+  - certifi=2018.4.16=py36_0
+  - gast=0.2.0=py36_0
+  - grpcio=1.12.1=py36h1a1b453_0
+  - html5lib=0.9999999=py36_0
+  - icc_rt=2017.0.4=h97af966_0
+  - intel-openmp=2018.0.3=0
+  - libprotobuf=3.5.2=he0781b1_0
+  - markdown=2.6.11=py36_0
+  - mkl=2018.0.3=1
+  - mkl_fft=1.0.1=py36h452e1ab_0
+  - mkl_random=1.0.1=py36h9258bd6_0
+  - numpy=1.14.5=py36h9fa60d3_3
+  - numpy-base=1.14.5=py36h5c71026_3
+  - pip=10.0.1=py36_0
+  - protobuf=3.5.2=py36h6538335_0
+  - python=3.6.5=h0c2934d_0
+  - setuptools=39.2.0=py36_0
+  - six=1.11.0=py36h4db2310_1
+  - tensorboard=1.8.0=py36he025d50_0
+  - tensorflow=1.8.0=0
+  - tensorflow-base=1.8.0=py36h1a1b453_0
+  - termcolor=1.1.0=py36_1
+  - vc=14=h0510ff6_3
+  - vs2015_runtime=14.0.25123=3
+  - werkzeug=0.14.1=py36_0
+  - wheel=0.31.1=py36_0
+  - wincertstore=0.2=py36h7fe50ca_0
+  - zlib=1.2.11=h8395fce_2
+prefix: C:\Anaconda3\envs\tensorflow
+
