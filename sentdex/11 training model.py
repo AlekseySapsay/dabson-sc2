@@ -102,3 +102,27 @@ for i in range(hm_epochs):
     attack_enemy_start = attack_enemy_start[:lowest_data]
 
     check_data()
+
+    train_data = no_attacks + attack_enemy_structures + attack_closest_to_nexus
+    random.shuffle(train_data)
+    test_size = 50#100 
+    batch_size = 64#128
+
+    x_train = np.array([i[1] for i in train_data[:-test_size]]).reshape(-1, 176, 200, 3)
+    y_train = np.array([i[0] for i in train_data[:-test_size]])
+
+    x_test = np.array([i[1] for i in train_data[-test_size:]]).reshape(-1, 176, 200, 3)
+    y_test = np.array([i[0] for i in train_data[-test_size:]])
+
+    model.fit(x_train, y_train, 
+      batch_size=batch_size, 
+      validation_data=(x_test, y_test),
+      shuffle=True, 
+      verbose=1,
+      callbacks=[tensorboard])
+
+    model.save("dabson_model/BasicCNN-{}-epochs-{}-LR-STAGE1".format(hm_epochs, learning_rate))
+    current += increment
+    if current > maximum:
+      not_maximum = False
+

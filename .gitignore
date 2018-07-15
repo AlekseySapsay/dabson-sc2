@@ -1,2 +1,4 @@
 sentdex/10train_data/
 sentdex/trained_model/
+sentdex/logs/
+sentdex/dabson_model/

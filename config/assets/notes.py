@@ -202,3 +202,8 @@ Dropout = tossing out data (no biasing nodes in the network, makes things more r
 
 'relu' is rectify Lienar
 tensorboard is usefull for logging trends
+[:,1] usually for the first element 
+
+run: dxdiag to see video memory 
+(not helpful)
+try GPU-Z
