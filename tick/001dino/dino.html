@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html><head><style>
+html, body {
+  margin:0;
+}
+#canvas{
+  width:800px;
+  height:400px;
+}
+</style></head><body><canvas id="canvas"></canvas></body><script>
+// think about how you'd make a game with replayable state
+// its really just a series of moves and actions 
+// ith features like auto-repeated attacks being computer-generated actions
+// will you per
+
+const canvasEl = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+var bird = new Image; bird.src = 'img/bird.png';
+var bird2 = new Image; bird2.src = 'img/bird2.png';
+var cactus = new Image; cactus.src = 'img/cactus.png';
+var cactus_multi = new Image; cactus_multi.src = 'img/cactus_multi.png';
+var cactus_small = new Image; cactus_small.src = 'img/cactus_small.png';
+var dino_die = new Image; dino_die.src = 'img/dino_die.png';
+var dino_duck = new Image; dino_duck.src = 'img/dino_duck.png';
+var dino_duck2 = new Image; dino_duck2.src = 'img/dino_duck2.png';
+var dino_jump = new Image; dino_jump.src = 'img/dino_jump.png';
+var dino_run = new Image; dino_run.src = 'img/dino_run.png';
+var dino_run2 = new Image; dino_run2.src = 'img/dino_run2.png';
+var dino_stand = new Image; dino_stand.src = 'img/dino_stand.png';
+
+//sprite
+var sprites= {
+  bird: img('bird'),
+  bird2: img('bird2'),
+  cactus: img('cactus'),
+  cactus_multi: img('cactus_multi'),
+  cactus_small: img('cactus_small'),
+  dino_die: img('dino_die'),
+  dino_duck: img('dino_duck'),
+  dino_duck2: img('dino_duck2'),
+  dino_jump: img('dino_jump'),
+  dino_run: img('dino_run'),
+  dino_run2: img('dino_run2'),
+  dino_stand: img('dino_stand'),
+};
+for(var x in sprites) {
+  sprites[x].onload=function() { if(isSpritesLoaded(sprites)) { onSpritesLoad(); }}
+}
+function img(filename) {
+  var ret = new Image();
+  ret.src = 'img/'+filename+'.png';
+  return ret;
+}
+function isImageLoaded(img) {
+  return img.complete && img.naturalWidth!==0;
+}
+function isSpritesLoaded(sprites) {
+  if(sprites==null)
+    return false
+  for(var x in sprites)
+    if (!isImageLoaded(sprites[x]))
+      return false
+  return true
+}
+function onSpritesLoad() {
+  //console.log('sprites loaded!');
+  canvasEl.style.backgroundColor='#aaa';
+}
+
+</script>
+</html>
