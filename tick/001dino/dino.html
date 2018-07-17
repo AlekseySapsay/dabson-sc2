@@ -57,7 +57,7 @@ for(var x in sprites) {
 function img(filename) {
   var ret = new Image();
   ret.src = 'img/'+filename+'.png';
-  return ret;
+  return ret;s
 }
 function isImageLoaded(img) {
   return img.complete && img.naturalWidth!==0;
@@ -81,13 +81,14 @@ function onSpritesLoad() {
   setInterval( updateFrame, 20 ); //20 = 50fps
 }
 
+var isJumping=0;
 var dinoAction=null;
 var dinoWalkCycle=0;
 var iterator=0;
-function updateFrame() {
+function updateFrame(){
   iterator++;
   var dino=null;
-  if(dinoAction=='jump') {
+  if(dinoAction=='jump' || isJumping) {
     dino=sprites.dino_jump;
   } else if(dinoAction=='duck') {
     dino=dinoWalkCycle ? sprites.dino_duck : sprites.dino_duck2;
@@ -98,11 +99,15 @@ function updateFrame() {
   ctx.fillStyle="#fff";
   ctx.fillRect(10,120,25,30);
 
-  ctx.drawImage(dino, 10, 120, 25, 30);
+  ctx.drawImage(dino, 10, 90+Math.abs((15-isJumping)*2), 25, 30);
   dinoWalkCycle=Math.floor(iterator/4)%2;
+  if(isJumping>0) {
+    isJumping--;
+  }
 }
 
 window.onkeydown = function(e) {
+  if(isJumping>0) return;
   var key = e.which;
   var left = 37;
   var up = 38;
@@ -117,6 +122,7 @@ window.onkeydown = function(e) {
   if(key==up || key==w || key==space) {
     console.log('up');
     dinoAction='jump';
+    isJumping=30;
   } else if(key==down || key==s) {
     console.log('down');
     dinoAction='duck';
