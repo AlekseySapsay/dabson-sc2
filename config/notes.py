@@ -226,13 +226,11 @@ https://github.com/chris-chris/pysc2-examples/pull/17
 The current version of pysc2 has introduced breaking changes to the SC2Env options and the format of observation objects.
 
 git fetch origin 38226b6e5ccc7d6bd86cd4d6f894270705fb0794
-
 https://github.com/chris-chris/pysc2-examples/pull/17/files
-
 tensorflow 1.8.0 has requirement tensorboard<1.9.0,>=1.8.0, but you'll have tensorboard 1.9.0 which is incompatible.
-
 pip uninstall tensorboard==1.9.0 
 
 by 17 https://www.ctolib.com/article/comments/60285 
 OpenAI’s baselines
 add things.
+
