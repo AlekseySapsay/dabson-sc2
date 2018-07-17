@@ -21,6 +21,7 @@ class DabsonBot(sc2.BotAI):
     self.decimalTime = 0 #in decimal minutes (e 1.5 = 1minute 30seconds)
     self.do_something_after = 0
     self.train_data = []
+    self.use_model = use_model
     if self.use_model:
       print("using model")
       self.model = keras.models.load_model("trained_model/BasicCNN-30-epochs-0.0001-LR-4.2")
@@ -233,9 +234,20 @@ class DabsonBot(sc2.BotAI):
 
   async def attack(self):
     if len(self.units(VOIDRAY).idle) > 0:
-      choice = random.randrange(0,4)
       target = False 
       if self.iteration > self.do_something_after:
+
+        if self.use_model: #use model, pass in a list of things to be predicted
+          prediction = self.model.predict([self.flipped.reshape([-1,176,200,3])])
+          choice = np.argmax(prediction[0])
+          choice_dict = {0: "No Attack!",
+                         1: "Attack close to our nexus!",
+                         2: "Attack Enemy Structure!",
+                         3: "Attack Eneemy Start!"}
+          print("Choice #{}:{}".format(choice, choice_dict[choice]))
+        else:
+          choice = random.randrange(0,4)
+
         if choice == 0: # no attack 
           wait = random.randrange(20, 165)
           self.do_something_after = self.iteration + wait 
@@ -261,6 +273,6 @@ class DabsonBot(sc2.BotAI):
 
 run_game(
   maps.get("AbyssalReefLE"), [
-    Bot(Race.Protoss, DabsonBot()),
-    Computer(Race.Terran, Difficulty.Easy)
+    Bot(Race.Protoss, DabsonBot(use_model=True)),
+    Computer(Race.Terran, Difficulty.Medium)
   ], realtime=False)
