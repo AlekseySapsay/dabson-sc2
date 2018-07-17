@@ -7,19 +7,23 @@ import random
 import cv2
 import numpy as np
 import time
+import keras
 
 HEADLESS = False #when true, will not render visualisation window
 
 # os.environ["SC2PATH"] = 'C:/starcraft/path/goes/here'
 # ~165 iterations per minute #self.f = open("gamedata.txt", "w+")
 class DabsonBot(sc2.BotAI):
-  def __init__(self):
+  def __init__(self, use_model=False):
     self.ITERATIONS_PER_MINUTE = 165
     self.MAX_WORKERS = 64
     self.RECOMENDED_WORKERS_PER_NEXUS = 16
     self.decimalTime = 0 #in decimal minutes (e 1.5 = 1minute 30seconds)
     self.do_something_after = 0
     self.train_data = []
+    if self.use_model:
+      print("using model")
+      self.model = keras.models.load_model("trained_model/BasicCNN-30-epochs-0.0001-LR-4.2")
 
   def on_end(self, game_result):
     print('--- on_end() called ---')

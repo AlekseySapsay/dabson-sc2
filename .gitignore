@@ -2,3 +2,4 @@ sentdex/10train_data/
 sentdex/trained_model/
 sentdex/logs/
 sentdex/dabson_model/
+sentdex/sentdex/BasicCNN-10-epochs-0.0001-LR-STAGE1
