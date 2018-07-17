@@ -6,6 +6,7 @@ html, body {
 #canvas{
   width:800px;
   height:400px;
+  border-bottom:3px solid #000;
 }
 </style></head><body><canvas id="canvas"></canvas></body><script>
 // think about how you'd make a game with replayable state
@@ -29,7 +30,6 @@ var dino_run = new Image; dino_run.src = 'img/dino_run.png';
 var dino_run2 = new Image; dino_run2.src = 'img/dino_run2.png';
 var dino_stand = new Image; dino_stand.src = 'img/dino_stand.png';
 
-//sprite
 var sprites= {
   bird: img('bird'),
   bird2: img('bird2'),
@@ -44,8 +44,15 @@ var sprites= {
   dino_run2: img('dino_run2'),
   dino_stand: img('dino_stand'),
 };
+
+var noSpritesLoaded = 0;
 for(var x in sprites) {
-  sprites[x].onload=function() { if(isSpritesLoaded(sprites)) { onSpritesLoad(); }}
+  sprites[x].onload=function() {
+    noSpritesLoaded++; 
+    if(noSpritesLoaded===Object.keys(sprites).length) { 
+      onSpritesLoad(); 
+    }
+  }
 }
 function img(filename) {
   var ret = new Image();
@@ -66,6 +73,22 @@ function isSpritesLoaded(sprites) {
 function onSpritesLoad() {
   //console.log('sprites loaded!');
   canvasEl.style.backgroundColor='#aaa';
+
+  for(var x in sprites) {
+    //ctx.drawImage(sprites[x],0,0);
+    //kick off game timer
+  }
+  setInterval( updateFrame, 20 ); //20 = 50fps
+}
+
+var dinoWalkCycle=0;
+var iterator=0;
+function updateFrame() {
+  iterator++;
+  var dinoFrame = dinoWalkCycle ? sprites.dino_run : sprites.dino_run2;
+  ctx.drawImage(dinoFrame, iterator , 0);
+  dinoWalkCycle=Math.floor(iterator/8)%2;
+  console.log(dinoWalkCycle);
 }
 
 </script>
