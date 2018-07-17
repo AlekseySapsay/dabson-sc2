@@ -61,7 +61,7 @@ class DabsonBot(sc2.BotAI):
           await self.do(rf.train(OBSERVER))    
 
   def random_location_variance(self, enemy_start_location):
-    x = enemy_start_location[0] * self.randDelta(.2)
+    x = enemy_start_location[0] * self.randDelta(.2) #this doesnt make sense, variance should not change based on random start location
     y = enemy_start_location[1] * self.randDelta(.2)
     x = self.bound(x, 0, self.game_info.map_size[0])
     y = self.bound(y, 0, self.game_info.map_size[1])
@@ -98,7 +98,7 @@ class DabsonBot(sc2.BotAI):
         u = draw_dict[unit_type]
         cv2.circle(game_data, (int(pos[0]), int(pos[1])), u[0], u[1], u[2]) #-1 for solid fill, no stroke
 
-    main_base_names = ["nexus", "supplydepot", "hatchery"]
+    main_base_names = ["nexus", "commandcenter", "hatchery"]
     for enemy_building in self.known_enemy_structures:
       pos = enemy_building.position
       if enemy_building.name.lower() not in main_base_names:
