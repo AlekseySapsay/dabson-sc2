@@ -233,4 +233,25 @@ pip uninstall tensorboard==1.9.0
 by 17 https://www.ctolib.com/article/comments/60285 
 OpenAI’s baselines
 add things.
+big spike @ 79%LMI (-20% will cascade)
+@Walk The World 30 What's stopping high house prices moving into consumer good prices?
 
+switch(e.which) {
+  case 37: // left
+  snakeDir = 'left';
+  break;
+
+  case 38: // up
+  snakeDir = 'up';
+  break;
+
+  case 39: // right
+  snakeDir = 'right';
+  break;
+
+  case 40: // down
+  snakeDir = 'down';
+  break;
+
+  default: return;
+}

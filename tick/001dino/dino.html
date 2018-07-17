@@ -81,15 +81,53 @@ function onSpritesLoad() {
   setInterval( updateFrame, 20 ); //20 = 50fps
 }
 
+var dinoAction=null;
 var dinoWalkCycle=0;
 var iterator=0;
 function updateFrame() {
   iterator++;
-  var dinoFrame = dinoWalkCycle ? sprites.dino_run : sprites.dino_run2;
-  ctx.drawImage(dinoFrame, iterator , 0);
-  dinoWalkCycle=Math.floor(iterator/8)%2;
-  console.log(dinoWalkCycle);
+  var dino=null;
+  if(dinoAction=='jump') {
+    dino=sprites.dino_jump;
+  } else if(dinoAction=='duck') {
+    dino=dinoWalkCycle ? sprites.dino_duck : sprites.dino_duck2;
+  } else {
+    dino=dinoWalkCycle ? sprites.dino_run : sprites.dino_run2;
+  }
+
+  ctx.fillStyle="#fff";
+  ctx.fillRect(10,120,25,30);
+
+  ctx.drawImage(dino, 10, 120, 25, 30);
+  dinoWalkCycle=Math.floor(iterator/4)%2;
+}
+
+window.onkeydown = function(e) {
+  var key = e.which;
+  var left = 37;
+  var up = 38;
+  var right = 39;
+  var down = 40;
+  var space = 32;
+  var w = 87;
+  var a = 65;
+  var s = 83;
+  var d = 68;
+
+  if(key==up || key==w || key==space) {
+    console.log('up');
+    dinoAction='jump';
+  } else if(key==down || key==s) {
+    console.log('down');
+    dinoAction='duck';
+  }
+};
+window.onkeyup=clearActions;
+
+function clearActions(e) {
+  dinoAction=null;
 }
 
 </script>
 </html>
+
