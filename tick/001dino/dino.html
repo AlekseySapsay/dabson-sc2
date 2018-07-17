@@ -81,10 +81,15 @@ function onSpritesLoad() {
   setInterval( updateFrame, 20 ); //20 = 50fps
 }
 
+const jumpheight = 20;
+const halfjump = jumpheight/2;
+const jumpmultiplier = 5;
+
 var isJumping=0;
 var dinoAction=null;
 var dinoWalkCycle=0;
 var iterator=0;
+
 function updateFrame(){
   iterator++;
   var dino=null;
@@ -96,14 +101,24 @@ function updateFrame(){
     dino=dinoWalkCycle ? sprites.dino_run : sprites.dino_run2;
   }
 
-  ctx.fillStyle="#fff";
-  ctx.fillRect(10,120,25,30);
 
-  ctx.drawImage(dino, 10, 90+Math.abs((15-isJumping)*2), 25, 30);
+  var jumpdel = halfjump-Math.abs(isJumping-halfjump);
+  var xPos = 10;
+  var yPos = 120-jumpdel*jumpmultiplier;
+  var width = 25;
+  var height = 30;
+
+  drawBorderedRect(xPos,yPos,width,height,4);
+  ctx.drawImage(dino,xPos,yPos,width,height);
   dinoWalkCycle=Math.floor(iterator/4)%2;
   if(isJumping>0) {
     isJumping--;
   }
+}
+
+function drawBorderedRect(xPos, yPos, width, height, thickness=5) {
+  ctx.fillStyle='#fff';
+  ctx.fillRect(xPos-thickness, yPos -thickness, width+thickness*2, height+thickness*2);
 }
 
 window.onkeydown = function(e) {
@@ -122,7 +137,7 @@ window.onkeydown = function(e) {
   if(key==up || key==w || key==space) {
     console.log('up');
     dinoAction='jump';
-    isJumping=30;
+    isJumping=jumpheight;
   } else if(key==down || key==s) {
     console.log('down');
     dinoAction='duck';
