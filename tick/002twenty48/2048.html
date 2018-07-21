@@ -38,7 +38,7 @@ var gameState = [
 
 function setupGame() {
   //@todo randomise this
-  gameState[0] = gameState[4] = gameState[8] = gameState[12] = gameState[15] = 2;
+  gameState[0] = gameState[4] = gameState[8] = gameState[12] = gameState[14] = gameState[15] = 2;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -155,9 +155,9 @@ function moveRight() {
   // shiftCombine(gameState, [0,1,2,3]);
   // shiftCombine(gameState, [4,5,6,7]);
   // shiftCombine(gameState, [8,9,10,11]);
-  shiftCombine(gameState, [12,13,14,15]);
+  //shiftCombine(gameState, [12,13,14,15]);
 
-  //mapIndexAndStack( (i,ii,j,jj) => { return j + i * gameDim } );
+  mapIndexAndStack( (i,ii,j,jj) => { return j + i * gameDim } );
 
 }
 
@@ -182,21 +182,53 @@ function shiftCombine(arr, indexMap) {
     throw 'Bad shiftCombine() call. IndexMap size must match gameDim';
   }
   let ret = new Array();
-  for(let i=0;i<gameDim;i++) {
+  let ret2 = new Array();
+
+  //stack empty space
+  for( i in indexMap ) {
     let cur = arr[indexMap[i]];
-    let next = ( i === ( gameDim - 1 ) ) ? 0 : arr[indexMap[i+1]];
-    if(cur===0) {
-      continue;
-    } else if(cur===next) {
-      ret.push(cur*2);
-      i++;
-    } else {
+    if(cur) {
       ret.push(cur);
     }
   }
-  ret = ret.concat( zeros( gameDim - ret.length ) );
+
+
+  //squash starting from right
+  for(let i=ret.length-1;i>0;i--){
+    let cur = ret[i];
+    let prev= ret[i-1];
+
+    if(cur!=0 && cur===prev){ 
+      ret[i] = cur * 2;
+      ret[i-1] = 0;
+    }
+  }
+
+  for( i in ret ) {;
+    if(ret[i]) {
+      ret2.push(ret[i]);
+    }
+  }
+
+  // for(let i=0;i<gameDim;i++) {
+  //   let cur = arr[indexMap[i]];
+  //   //let next = ( i === ( gameDim - 1 ) ) ? 0 : arr[indexMap[i+1]];
+  //   let prev = i === 0 ? 0 : arr[indexMap[i-1]];
+  //   let prev2 = i < 2 ? 0 : arr[indexMap[i-2]]
+
+  //   if(cur===0) {
+  //     continue;
+  //   } else if(cur===prev && prev!=prev2) {
+  //     ret.push(cur*2);
+  //     i++;
+  //   } else {
+  //     ret.push(cur);
+  //   }
+  // }
+  ret = zeros( gameDim - ret2.length ).concat( ret2 );
+  console.log(ret);
   for( i in ret ) {
-    arr[indexMap[i]] = ret[ gameDim-1-i ];
+    arr[indexMap[i]] = ret[ i ];
   }
 }
 
