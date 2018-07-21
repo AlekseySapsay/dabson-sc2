@@ -129,23 +129,52 @@ function moveUp() {
   // shiftCombine(gameState, 12, 8, 4, 0);
   // shiftCombine(gameState, 12, 8, 4, 0);
 
-  for(let i=0;i<gameDim;i++) {
-    let indexMap = new Array();
-    for(let j=0;j<gameDim;j++) {
-      let jInv = gameDim - j - 1;
-      indexMap.push( i + jInv * gameDim )
-    }
-    shiftCombine(gameState, indexMap);
-  }
+  // for(let i=0;i<gameDim;i++) {
+  //   let indexMap = new Array();
+  //   for(let j=0;j<gameDim;j++) {
+  //     let jInv = gameDim - j - 1;
+  //     indexMap.push( i + jInv * gameDim )
+  //   }
+  //   shiftCombine(gameState, indexMap);
+  // }
+
+  // i + jInv * gameDim
+
+  mapIndexAndStack( (i,ii,j,jj) => { return i + jj * gameDim } );
 }
 function moveDown() {
-
+  mapIndexAndStack( (i,ii,j,jj) => { return  } );
 }
-function moveLeft() {
 
+function moveLeft() {
+  mapIndexAndStack( (i,ii,j,jj) => { return  } );
 }
 function moveRight() {
 
+  // 0,1,2,4 //moves from leftmost index to rightmost index  
+  // shiftCombine(gameState, [0,1,2,3]);
+  // shiftCombine(gameState, [4,5,6,7]);
+  // shiftCombine(gameState, [8,9,10,11]);
+  // shiftCombine(gameState, [12,13,14,15]);
+
+  mapIndexAndStack( (i,ii,j,jj) => { return j + i * gameDim } );
+
+}
+
+/* 
+ * Expected: lambda(i, invI, j, invJ)
+ * for each i iteration, it does a full shiftCombine
+ */
+function mapIndexAndStack(lambda) {
+  for(let i=0;i<gameDim;i++) {
+    let iInv = gameDim - i - 1;
+    let indexMap = new Array();
+    for(let j=0;j<gameDim;j++) {
+      let jInv = gameDim - j - 1;
+      indexMap.push( lambda( i, iInv, j, jInv ) );
+    }
+    shiftCombine(gameState, indexMap);
+  }
 }
 
 function shiftCombine(arr, indexMap) {
