@@ -98,8 +98,7 @@ window.onkeydown = function(e) {
 })();
 
 
-// Thanks Juan Mendes stackO/1255512
-function roundRect(ctx, x, y, width, height, fillStyle, radius) {
+function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan Mendes stackO/1255512
   if (typeof radius === 'undefined') {
     radius = 5;
   }
@@ -125,7 +124,6 @@ function roundRect(ctx, x, y, width, height, fillStyle, radius) {
 
   ctx.fillStyle = fillStyle;
   ctx.fill();
-  //ctx.stroke();
 }
 </script>
 </html>
