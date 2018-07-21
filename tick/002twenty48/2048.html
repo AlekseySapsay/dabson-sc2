@@ -36,14 +36,16 @@ function setupGame() {
     let xPos = boxWidth * ( i % gameDim );
     let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
 
-    let val = Math.pow( 2, i + 4 );
-    //drawBox(xPos,yPos,boxWidth,boxHeight,val);
+    let val = i % 2 == 0 ? 0 : Math.pow( 2, i + 4 );
+    drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val);
+  }
+}
 
-    let fillColor = i % 2 == 0 ? "#aaa" : "#f93";
-    //ctx.fillStyle = fill;
-    //ctx.fillRect(xPos+boxMargin,yPos+boxMargin,boxWidth-boxMargin*2,boxHeight-boxMargin*2);
-    roundRect(ctx, xPos+boxMargin,yPos+boxMargin,boxWidth-boxMargin*2,boxHeight-boxMargin*2, fillColor);
+function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
+  let fillColor = val ? "#f93" : "#aaa";
+  roundRect(ctx, xPos+boxMargin,yPos+boxMargin,boxWidth-boxMargin*2,boxHeight-boxMargin*2, fillColor);
 
+  if(val) {
     ctx.font = "bold " + ( 90 - val.toString().length * 10 ) + "px Arial";
     ctx.fillStyle = "#333";
     ctx.textAlign = "center";
