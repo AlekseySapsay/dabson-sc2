@@ -256,3 +256,6 @@ switch(e.which) {
   default: return;
 }
 not
+
+Is it yak shaving to want to publish an npm package to make setting up a simple game simple? 
+
