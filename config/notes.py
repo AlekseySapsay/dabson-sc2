@@ -261,3 +261,4 @@ Is it yak shaving to want to publish an npm package to make setting up a simple 
 
 (2.8-Math.log10(i))
 its not easy being cheesy ;) xxo
+let val = i % 2 == 0 ? 0 : Math.pow( 2, i + 4 );

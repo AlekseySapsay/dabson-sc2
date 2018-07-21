@@ -26,19 +26,18 @@ if(cssCanvasPixelWidth && cssCanvasPixelHeight) {
 
 const gameDim = 4;
 const boxMargin = 4; //should be twice the canvas border width (border subsidises outer margin)
+const boxWidth = canvasEl.width / gameDim;
+const boxHeight = canvasEl.height / gameDim;
+
 var gameIterator = 0;
+var gameState = [ 
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0,
+  0, 0, 0, 0 ];
 
 function setupGame() {
-  let boxWidth = canvasEl.width / gameDim;
-  let boxHeight = canvasEl.height / gameDim;
-
-  for(let i=0;i<16;i++) {
-    let xPos = boxWidth * ( i % gameDim );
-    let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
-
-    let val = i % 2 == 0 ? 0 : Math.pow( 2, i + 4 );
-    drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val);
-  }
+  gameState[5] = gameState[15] = 2;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -54,6 +53,11 @@ function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
 }
 
 function updateFrame() {
+  for(let i=0;i<gameDim*gameDim;i++) {
+    let xPos = boxWidth * ( i % gameDim );
+    let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
+    drawBox(ctx,xPos,yPos,boxWidth,boxHeight,gameState[i]);
+  }
   gameIterator++;
 }
 
