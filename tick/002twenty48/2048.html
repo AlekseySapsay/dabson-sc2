@@ -25,7 +25,7 @@ if(cssCanvasPixelWidth && cssCanvasPixelHeight) {
 }
 
 const gameDim = 4;
-const boxMargin = 4; //should be twice the canvas border width (border subsidises outer margin)
+const boxMargin = 2 * parseInt(window.getComputedStyle(canvasEl).getPropertyValue('border-width').slice(0,-2));
 const boxWidth = canvasEl.width / gameDim;
 const boxHeight = canvasEl.height / gameDim;
 const spawnCount = 2;
@@ -42,8 +42,6 @@ var gameState = [
 ];
 
 function setupGame() {
-  //@todo randomise this
-  //gameState[0] = gameState[4] = gameState[12] = gameState[14] = gameState[15] = 2;
   repopulate();
 }
 
@@ -72,7 +70,6 @@ window.onkeydown = function(e) {
   if( !isPlaying ) {
     return;
   }
-
   var key = e.which;
   var left = 37;
   var up = 38;
@@ -158,6 +155,7 @@ function repopulate() {
       endGame('win');
     }
   }
+
   if(zeroIndex.length<spawnCount) {
     endGame('loose');
   }
@@ -174,9 +172,9 @@ function endGame(status) {
   isPlaying=false;
   clearInterval(gameTicker);
 
-  let fillStyle="#f00";
+  let fillStyle="#e00";
   if(status==='win') {
-    fillStyle="#0f0"
+    fillStyle="#0e0"
   }
   roundRect(ctx, 0, 0, canvasEl.width, canvasEl.height, fillStyle);
 
@@ -188,7 +186,7 @@ function endGame(status) {
 }
 
 /* 
- * Expected: lambda(i, invI, j, invJ)
+ * Expected: lambda(i, j, jInverse)
  * for each i iteration, it does a full shiftCombine
  */
 function mapIndexAndStack(lambda) {
