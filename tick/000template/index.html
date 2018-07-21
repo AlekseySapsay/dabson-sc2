@@ -4,16 +4,52 @@ html, body {
   margin:0;
 }
 #canvas{
-  width:800px;
-  height:400px;
+  width:600px;
+  height:600px;
   background: #eee;
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin:-300px 0 0 -300px;
+  border-radius:3px;
 }
 </style></head><body><canvas id="canvas"></canvas></body><script>
 const canvasEl = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+var gameIterator = 0;
 
+function gameLoop() {
+  let fps = 50;
+  let millisecs = 1000/fps;
+  document.addEventListener('DOMContentLoaded', x => {
+    setInterval( updateFrame, millisecs );
+  }, false);
+}
 
+function updateFrame() {
+  //console.log(gameIterator);
+  gameIterator++;
+}
 
+window.onkeydown = function(e) {
+  var key = e.which;
+  var left = 37;
+  var up = 38;
+  var right = 39;
+  var down = 40;
+  var space = 32;
+  var w = 87;
+  var a = 65;
+  var s = 83;
+  var d = 68;
+
+  if(key==up || key==w || key==space) {
+  } else if(key==down || key==s) {
+  }
+};
+//window.onkeyup=clearActions;
+
+gameLoop();
 </script>
 </html>
 
