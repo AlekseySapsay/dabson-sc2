@@ -166,7 +166,6 @@ function shiftCombine(arr, indexMap) {
     }
   }
 
-
   //squash starting from right
   for(let i=ret.length-1;i>0;i--){
     let cur = ret[i];
@@ -178,29 +177,15 @@ function shiftCombine(arr, indexMap) {
     }
   }
 
+  //stack again
   for( i in ret ) {;
     if(ret[i]) {
       ret2.push(ret[i]);
     }
   }
 
-  // for(let i=0;i<gameDim;i++) {
-  //   let cur = arr[indexMap[i]];
-  //   //let next = ( i === ( gameDim - 1 ) ) ? 0 : arr[indexMap[i+1]];
-  //   let prev = i === 0 ? 0 : arr[indexMap[i-1]];
-  //   let prev2 = i < 2 ? 0 : arr[indexMap[i-2]]
-
-  //   if(cur===0) {
-  //     continue;
-  //   } else if(cur===prev && prev!=prev2) {
-  //     ret.push(cur*2);
-  //     i++;
-  //   } else {
-  //     ret.push(cur);
-  //   }
-  // }
+  // leftPad and assign
   ret = zeros( gameDim - ret2.length ).concat( ret2 );
-
   for( i in ret ) {
     arr[indexMap[i]] = ret[i];
   }
