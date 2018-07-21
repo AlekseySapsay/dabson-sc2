@@ -264,5 +264,35 @@ its not easy being cheesy ;) xxo
 let val = i % 2 == 0 ? 0 : Math.pow( 2, i + 4 );
 
 consider putting the delimiters in your bash / git alias 
-
 there's probably a really cool/efficient way to pass in references to the shiftCombine() function'
+
+function moveUp() {
+  // shiftCombine(gameState, 12, 8, 4, 0);
+  // shiftCombine(gameState, 12, 8, 4, 0);
+  // shiftCombine(gameState, 12, 8, 4, 0);
+  // shiftCombine(gameState, 12, 8, 4, 0);
+
+  mapIndexAndStack( (i,ii,j,jj) => { return i + jj * gameDim } );
+}
+function moveDown() {
+  //0,4,8,12
+  //1,5,9,13
+  //2,6,10,14
+  //3,7,11,15
+  mapIndexAndStack( (i,ii,j,jj) => { return i + j * gameDim } );
+}
+
+function moveLeft() {
+  mapIndexAndStack( (i,ii,j,jj) => { return jj + i * gameDim } );
+}
+function moveRight() {
+
+  // 0,1,2,4 //moves from leftmost index to rightmost index  
+  // shiftCombine(gameState, [0,1,2,3]);
+  // shiftCombine(gameState, [4,5,6,7]);
+  // shiftCombine(gameState, [8,9,10,11]);
+  //shiftCombine(gameState, [12,13,14,15]);
+
+  mapIndexAndStack( (i,ii,j,jj) => { return j + i * gameDim } );
+
+}

@@ -38,7 +38,7 @@ var gameState = [
 
 function setupGame() {
   //@todo randomise this
-  gameState[0] = gameState[4] = gameState[8] = gameState[12] = gameState[14] = gameState[15] = 2;
+  gameState[0] = gameState[4] = gameState[12] = gameState[14] = gameState[15] = 2;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -124,41 +124,16 @@ function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan
 }
 
 function moveUp() {
-  // shiftCombine(gameState, 12, 8, 4, 0);
-  // shiftCombine(gameState, 12, 8, 4, 0);
-  // shiftCombine(gameState, 12, 8, 4, 0);
-  // shiftCombine(gameState, 12, 8, 4, 0);
-
-  // for(let i=0;i<gameDim;i++) {
-  //   let indexMap = new Array();
-  //   for(let j=0;j<gameDim;j++) {
-  //     let jInv = gameDim - j - 1;
-  //     indexMap.push( i + jInv * gameDim )
-  //   }
-  //   shiftCombine(gameState, indexMap);
-  // }
-
-  // i + jInv * gameDim
-
-  mapIndexAndStack( (i,ii,j,jj) => { return i + jj * gameDim } );
+  mapIndexAndStack( (i,j,k) => { return i + k * gameDim } );
 }
 function moveDown() {
-  mapIndexAndStack( (i,ii,j,jj) => { return  } );
+  mapIndexAndStack( (i,j,k) => { return i + j * gameDim } );
 }
-
 function moveLeft() {
-  mapIndexAndStack( (i,ii,j,jj) => { return  } );
+  mapIndexAndStack( (i,j,k) => { return k + i * gameDim } );
 }
 function moveRight() {
-
-  // 0,1,2,4 //moves from leftmost index to rightmost index  
-  // shiftCombine(gameState, [0,1,2,3]);
-  // shiftCombine(gameState, [4,5,6,7]);
-  // shiftCombine(gameState, [8,9,10,11]);
-  //shiftCombine(gameState, [12,13,14,15]);
-
-  mapIndexAndStack( (i,ii,j,jj) => { return j + i * gameDim } );
-
+  mapIndexAndStack( (i,j,k) => { return j + i * gameDim } );
 }
 
 /* 
@@ -167,11 +142,10 @@ function moveRight() {
  */
 function mapIndexAndStack(lambda) {
   for(let i=0;i<gameDim;i++) {
-    let iInv = gameDim - i - 1;
     let indexMap = new Array();
     for(let j=0;j<gameDim;j++) {
       let jInv = gameDim - j - 1;
-      indexMap.push( lambda( i, iInv, j, jInv ) );
+      indexMap.push( lambda( i, j, jInv ) );
     }
     shiftCombine(gameState, indexMap);
   }
@@ -226,9 +200,9 @@ function shiftCombine(arr, indexMap) {
   //   }
   // }
   ret = zeros( gameDim - ret2.length ).concat( ret2 );
-  console.log(ret);
+
   for( i in ret ) {
-    arr[indexMap[i]] = ret[ i ];
+    arr[indexMap[i]] = ret[i];
   }
 }
 
