@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html><head><style>
+<html><head><title>2048 - use arrow keys</title><style>
 html, body {
   margin:0;
 }
@@ -28,8 +28,11 @@ const gameDim = 4;
 const boxMargin = 4; //should be twice the canvas border width (border subsidises outer margin)
 const boxWidth = canvasEl.width / gameDim;
 const boxHeight = canvasEl.height / gameDim;
+const winCond = 8;
+const spawnCount = 4;
 
 var gameIterator = 0;
+var isPlaying = true;
 var gameState = [ 
   0, 0, 0, 0,
   0, 0, 0, 0,
@@ -38,7 +41,8 @@ var gameState = [
 
 function setupGame() {
   //@todo randomise this
-  gameState[0] = gameState[4] = gameState[12] = gameState[14] = gameState[15] = 2;
+  //gameState[0] = gameState[4] = gameState[12] = gameState[14] = gameState[15] = 2;
+  repopulate();
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -63,6 +67,10 @@ function updateFrame() {
 }
 
 window.onkeydown = function(e) {
+  if( !isPlaying ) {
+    return;
+  }
+
   var key = e.which;
   var left = 37;
   var up = 38;
@@ -94,7 +102,6 @@ window.onkeydown = function(e) {
   }, false);
 })();
 
-
 function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan Mendes stackO/1255512
   if (typeof radius === 'undefined') {
     radius = 5;
@@ -125,15 +132,49 @@ function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan
 
 function moveUp() {
   mapIndexAndStack( (i,j,k) => { return i + k * gameDim } );
+  repopulate();
 }
 function moveDown() {
   mapIndexAndStack( (i,j,k) => { return i + j * gameDim } );
+  repopulate();
 }
 function moveLeft() {
   mapIndexAndStack( (i,j,k) => { return k + i * gameDim } );
+  repopulate();
 }
 function moveRight() {
   mapIndexAndStack( (i,j,k) => { return j + i * gameDim } );
+  repopulate();
+}
+
+function repopulate() {
+  let zeroIndex = new Array();
+  for(i in gameState) {
+    if(!gameState[i]) {
+      zeroIndex.push(i);
+    } else if( gameState[i] === winCond ) {
+      endGame('win');
+    }
+  }
+  if(zeroIndex.length<spawnCount) {
+    endGame('fail');
+  }
+
+  for(let i=0;i<spawnCount;i++) {
+    let randIndex = Math.floor(Math.random() * zeroIndex.length);
+    let val = gameState[zeroIndex[randIndex]];
+    val = val === 0 ? 2 : val * 2;
+    gameState[zeroIndex[randIndex]] = val;
+  }
+}
+
+function endGame(status) {
+  if(status='win') {
+
+  } else {
+
+  }
+  isPlaying=false;
 }
 
 /* 
@@ -151,6 +192,10 @@ function mapIndexAndStack(lambda) {
   }
 }
 
+/*
+ * The core game function. Given a row or column defined by indexMap, 
+ * move, combine and move all elements to next state transition
+ */
 function shiftCombine(arr, indexMap) {
   if(indexMap.length != gameDim ) {
     throw 'Bad shiftCombine() call. IndexMap size must match gameDim';
@@ -158,7 +203,7 @@ function shiftCombine(arr, indexMap) {
   let ret = new Array();
   let ret2 = new Array();
 
-  //stack empty space
+  // Stack empty space
   for( i in indexMap ) {
     let cur = arr[indexMap[i]];
     if(cur) {
@@ -166,7 +211,7 @@ function shiftCombine(arr, indexMap) {
     }
   }
 
-  //squash starting from right
+  // Squash adjacent pairs, starting from right
   for(let i=ret.length-1;i>0;i--){
     let cur = ret[i];
     let prev= ret[i-1];
@@ -177,14 +222,14 @@ function shiftCombine(arr, indexMap) {
     }
   }
 
-  //stack again
+  // Stack again
   for( i in ret ) {;
     if(ret[i]) {
       ret2.push(ret[i]);
     }
   }
 
-  // leftPad and assign
+  // Left-pad array and assign
   ret = zeros( gameDim - ret2.length ).concat( ret2 );
   for( i in ret ) {
     arr[indexMap[i]] = ret[i];
