@@ -16,6 +16,13 @@ html, body {
 </style></head><body><canvas id="canvas"></canvas></body><script>
 const canvasEl = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const cssCanvasPixelWidth = parseInt(window.getComputedStyle(canvasEl).getPropertyValue('width').slice(0,-2));
+const cssCanvasPixelHeight = parseInt(window.getComputedStyle(canvasEl).getPropertyValue('height').slice(0,-2));
+if(cssCanvasPixelWidth && cssCanvasPixelHeight) {
+  canvasEl.width = cssCanvasPixelWidth;
+  canvasEl.height= cssCanvasPixelHeight;
+}
+
 var gameIterator = 0;
 
 function gameLoop() {
