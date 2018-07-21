@@ -291,8 +291,10 @@ function moveRight() {
   // shiftCombine(gameState, [0,1,2,3]);
   // shiftCombine(gameState, [4,5,6,7]);
   // shiftCombine(gameState, [8,9,10,11]);
-  //shiftCombine(gameState, [12,13,14,15]);
+  // shiftCombine(gameState, [12,13,14,15]);
 
   mapIndexAndStack( (i,ii,j,jj) => { return j + i * gameDim } );
 
 }
+
+perhaps make a transition map 

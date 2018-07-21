@@ -30,19 +30,33 @@ const boxWidth = canvasEl.width / gameDim;
 const boxHeight = canvasEl.height / gameDim;
 const spawnCount = 2;
 const winCondition = 2048;
+const fps = 50;
+const transitionTicks = 10;
+const millisecs = 1000/fps;
 
-var gameTicker;
+var gameInterval;
 var gameIterator = 0;
-var isPlaying = true;
+var isEnded = false;
 var gameState = [ 
   0, 0, 0, 0,
   0, 0, 0, 0,
   0, 0, 0, 0,
   0, 0, 0, 0 
 ];
+var oldState;
+var transitionState;
 
 function setupGame() {
   repopulate();
+  oldState = gameState.slice();
+}
+
+function isPlaying() {
+  return !isEnded && !isTransitioning(); 
+}
+
+function isTransitioning() {
+  return gameIterator < 0;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -58,16 +72,31 @@ function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
 }
 
 function updateFrame() {
-  for(let i=0;i<gameDim*gameDim;i++) {
+  ctx.fillStyle="#eee";
+  ctx.fillRect(0,0,canvasEl.width,canvasEl.height);
+  for(let i=0;i<gameState.length;i++) {
     let xPos = boxWidth * ( i % gameDim );
     let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
-    drawBox(ctx,xPos,yPos,boxWidth,boxHeight,gameState[i]);
+    drawBox(ctx,xPos,yPos,boxWidth,boxHeight,gameState[i] * !isTransitioning());
   }
+
+  //if transitioning, draw transition boxes
+  if( isTransitioning() ) {
+    for(let i=0;i<gameState.length;i++) {
+      let cur = gameState[i];
+      if(cur) {
+        let xPos = boxWidth * ( i % gameDim );
+        let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
+        drawBox(ctx,xPos+Math.abs(gameIterator)*4,yPos,boxWidth,boxHeight,gameState[i],cur);
+      }
+    }
+  }
+
   gameIterator++;
 }
 
 window.onkeydown = function(e) {
-  if( !isPlaying ) {
+  if( !isPlaying() ) {
     return;
   }
   var key = e.which;
@@ -89,17 +118,21 @@ window.onkeydown = function(e) {
     moveLeft();
   } else if( key===right || key===d ) {
     moveRight();
-  } 
+  } else if( key===space ) {
+    undo();
+  }
 };
 
 (function gameLoop() {
-  let fps = 50;
-  let millisecs = 1000/fps;
   document.addEventListener('DOMContentLoaded', x => {
     setupGame();
-    gameTicker = setInterval( updateFrame, millisecs );
+    gameInterval = setInterval( updateFrame, millisecs );
   }, false);
 })();
+
+function undo() {
+  gameState = oldState.slice();
+}
 
 function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan Mendes stackO/1255512
   if (typeof radius === 'undefined') {
@@ -169,8 +202,8 @@ function repopulate() {
 }
 
 function endGame(status) {
-  isPlaying=false;
-  clearInterval(gameTicker);
+  isEnded=true;
+  clearInterval(gameInterval);
 
   let fillStyle="#e00";
   if(status==='win') {
@@ -182,7 +215,6 @@ function endGame(status) {
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
   ctx.fillText('You '+status+'!', canvasEl.width/2, canvasEl.height/2);
-
 }
 
 /* 
@@ -198,6 +230,7 @@ function mapIndexAndStack(lambda) {
     }
     shiftCombine(gameState, indexMap);
   }
+  gameIterator = -transitionTicks; //flag for transition
 }
 
 /*
@@ -208,6 +241,7 @@ function shiftCombine(arr, indexMap) {
   if(indexMap.length != gameDim ) {
     throw 'Bad shiftCombine() call. IndexMap size must match gameDim';
   }
+  let transitionArray = zeros(gameDim);
   let ret = new Array();
   let ret2 = new Array();
 
@@ -239,9 +273,12 @@ function shiftCombine(arr, indexMap) {
 
   // Left-pad array and assign
   ret = zeros( gameDim - ret2.length ).concat( ret2 );
+  oldState = gameState.slice();; 
   for( i in ret ) {
     arr[indexMap[i]] = ret[i];
   }
+
+  // @todo: somehow make the transition matrix, then incorporate it into animations
 }
 
 function zeros(len) {
