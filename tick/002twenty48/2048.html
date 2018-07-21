@@ -12,6 +12,7 @@ html, body {
   left:50%;
   margin:-300px 0 0 -300px;
   border-radius:3px;
+  border:2px solid #eee;
 }
 </style></head><body><canvas id="canvas"></canvas></body><script>
 const canvasEl = document.getElementById('canvas');
@@ -23,24 +24,30 @@ if(cssCanvasPixelWidth && cssCanvasPixelHeight) {
   canvasEl.height = cssCanvasPixelHeight;
 }
 
-var gameDim = 4;
+const gameDim = 4;
+const boxMargin = 4; //should be twice the canvas border width (border subsidises outer margin)
 var gameIterator = 0;
 
 function setupGame() {
   let boxWidth = canvasEl.width / gameDim;
   let boxHeight = canvasEl.height / gameDim;
+
   for(let i=0;i<16;i++) {
     let xPos = boxWidth * ( i % gameDim );
     let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
 
-    ctx.fillStyle=i%2==0?"#aaa":"#f00";
-    ctx.fillRect(xPos,yPos,boxWidth,boxHeight);
+    let val = Math.pow( 2, i + 4 );
+    //drawBox(xPos,yPos,boxWidth,boxHeight,val);
 
-    var num = Math.pow(2,i+4);
-    ctx.font = (90-num.toString().length*10)+"px Arial";
-    ctx.fillStyle = "#000";
+    let fillColor = i % 2 == 0 ? "#aaa" : "#f93";
+    //ctx.fillStyle = fill;
+    //ctx.fillRect(xPos+boxMargin,yPos+boxMargin,boxWidth-boxMargin*2,boxHeight-boxMargin*2);
+    roundRect(ctx, xPos+boxMargin,yPos+boxMargin,boxWidth-boxMargin*2,boxHeight-boxMargin*2, fillColor);
+
+    ctx.font = "bold " + ( 90 - val.toString().length * 10 ) + "px Arial";
+    ctx.fillStyle = "#333";
     ctx.textAlign = "center";
-    ctx.fillText(num,xPos+70,yPos+95);
+    ctx.fillText(val,xPos+70,yPos+95);
   }
 }
 
@@ -84,5 +91,35 @@ window.onkeydown = function(e) {
   }, false);
 })();
 
+
+// Thanks Juan Mendes stackO/1255512
+function roundRect(ctx, x, y, width, height, fillStyle, radius) {
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  if (typeof radius === 'number') {
+    radius = {tl: radius, tr: radius, br: radius, bl: radius};
+  } else {
+    var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+    for (var side in defaultRadius) {
+      radius[side] = radius[side] || defaultRadius[side];
+    }
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + width - radius.tr, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+  ctx.lineTo(x + width, y + height - radius.br);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+  ctx.lineTo(x + radius.bl, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+  ctx.lineTo(x, y + radius.tl);
+  ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+  ctx.closePath();
+
+  ctx.fillStyle = fillStyle;
+  ctx.fill();
+  //ctx.stroke();
+}
 </script>
 </html>
