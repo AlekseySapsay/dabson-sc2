@@ -27,7 +27,6 @@ function gameLoop() {
 }
 
 function updateFrame() {
-  //console.log(gameIterator);
   gameIterator++;
 }
 
@@ -43,13 +42,30 @@ window.onkeydown = function(e) {
   var s = 83;
   var d = 68;
 
-  if(key==up || key==w || key==space) {
-  } else if(key==down || key==s) {
+  if( key===up || key===w ) {
+    //up
+    console.log('up');
+  } else if( key===down || key===s ) {
+    //down
+    console.log('down');
+  } else if( key===left || key===a ) {
+    //left
+    console.log('left');
+  } else if( key===right || key===d ) {
+    //right
+    console.log('right');
+  } else if( key===space ) {
+    //space
+    console.log('space');
+  } else if( e.shiftKey ) {
+    //shift
+    console.log('shift');
+  } else if( e.ctrlKey ) {
+    //control
+    console.log('ctrl');
   }
 };
-//window.onkeyup=clearActions;
 
 gameLoop();
 </script>
 </html>
-
