@@ -76,16 +76,12 @@ window.onkeydown = function(e) {
 
   if( key===up || key===w ) {
     moveUp()
-    console.log('up');
   } else if( key===down || key===s ) {
     moveDown();
-    console.log('down');
   } else if( key===left || key===a ) {
     moveLeft();
-    console.log('left');
   } else if( key===right || key===d ) {
     moveRight();
-    console.log('right');
   } 
 };
 
@@ -138,7 +134,19 @@ function moveUp() {
   // gameState[0] = shifted[0];
 
 
-  shiftCombine(gameState, 12, 8, 4, 0);
+  let a = b = c = gameDim;
+  a *= 3;
+  b *= 2;
+  //@todo: crap. convert to enhanced-for loop.
+
+  for(let i=0;i<gameDim;i++) {
+    shiftCombine(gameState, a+i, b+i, c+i, i);
+  }
+
+  // shiftCombine(gameState, 12, 8, 4, 0);
+  // shiftCombine(gameState, 12, 8, 4, 0);
+  // shiftCombine(gameState, 12, 8, 4, 0);
+  // shiftCombine(gameState, 12, 8, 4, 0);
 }
 function moveDown() {
 
@@ -155,9 +163,9 @@ function shiftCombine(arr, ...indexMap) {
     throw 'Bad shiftCombine() call. IndexMap size must match gameDim';
   }
   let ret = new Array();
-  for(let i=0;i<(gameDim-1);i++) {
+  for(let i=0;i<gameDim;i++) {
     let cur = arr[indexMap[i]];
-    let next = arr[indexMap[i+1]];
+    let next = ( i === ( gameDim - 1 ) ) ? 0 : arr[indexMap[i+1]];
     if(cur===0) {
       continue;
     } else if(cur===next) {
@@ -167,7 +175,6 @@ function shiftCombine(arr, ...indexMap) {
       ret.push(cur);
     }
   }
-
   ret = ret.concat( zeros( gameDim - ret.length ) );
   for( i in ret ) {
     arr[indexMap[i]] = ret[gameDim-1-i];
