@@ -128,14 +128,17 @@ function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan
 }
 
 function moveUp() {
-  var col1 = [gameState[12], gameState[8], gameState[4], gameState[0]];
-  var shifted = shiftCombine(col1);
-  console.log('shifted',shifted);
+  //var col1 = [gameState[12], gameState[8], gameState[4], gameState[0]];
+  //var shifted = shiftCombine(col1);
+  // console.log('shifted',shifted);
 
-  gameState[12] = shifted[3];
-  gameState[8] = shifted[2];
-  gameState[4] = shifted[1];
-  gameState[0] = shifted[0];
+  // gameState[12] = shifted[3];
+  // gameState[8] = shifted[2];
+  // gameState[4] = shifted[1];
+  // gameState[0] = shifted[0];
+
+
+  shiftCombine(gameState, 12, 8, 4, 0);
 }
 function moveDown() {
 
@@ -147,11 +150,14 @@ function moveRight() {
 
 }
 
-function shiftCombine(arr) {
+function shiftCombine(arr, ...indexMap) {
+  if(indexMap.length != gameDim ) {
+    throw 'Bad shiftCombine() call. IndexMap size must match gameDim';
+  }
   let ret = new Array();
-  for(let i=0;i<(arr.length-1);i++) {
-    let cur = arr[i];
-    let next = arr[i+1];
+  for(let i=0;i<(gameDim-1);i++) {
+    let cur = arr[indexMap[i]];
+    let next = arr[indexMap[i+1]];
     if(cur===0) {
       continue;
     } else if(cur===next) {
@@ -162,7 +168,10 @@ function shiftCombine(arr) {
     }
   }
 
-  return ret.concat( zeros( arr.length - ret.length ) );
+  ret = ret.concat( zeros( gameDim - ret.length ) );
+  for( i in ret ) {
+    arr[indexMap[i]] = ret[gameDim-1-i];
+  }
 }
 
 function zeros(len) {
