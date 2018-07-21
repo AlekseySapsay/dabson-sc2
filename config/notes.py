@@ -259,3 +259,5 @@ not
 
 Is it yak shaving to want to publish an npm package to make setting up a simple game simple? 
 
+(2.8-Math.log10(i))
+its not easy being cheesy ;) xxo

@@ -20,7 +20,7 @@ const cssCanvasPixelWidth = parseInt(window.getComputedStyle(canvasEl).getProper
 const cssCanvasPixelHeight = parseInt(window.getComputedStyle(canvasEl).getPropertyValue('height').slice(0,-2));
 if(cssCanvasPixelWidth && cssCanvasPixelHeight) {
   canvasEl.width = cssCanvasPixelWidth;
-  canvasEl.height= cssCanvasPixelHeight;
+  canvasEl.height = cssCanvasPixelHeight;
 }
 
 var gameDim = 4;
@@ -29,9 +29,18 @@ var gameIterator = 0;
 function setupGame() {
   let boxWidth = canvasEl.width / gameDim;
   let boxHeight = canvasEl.height / gameDim;
-  for(let i=0;i<6;i++) {
+  for(let i=0;i<16;i++) {
+    let xPos = boxWidth * ( i % gameDim );
+    let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
+
     ctx.fillStyle=i%2==0?"#aaa":"#f00";
-    ctx.fillRect(i%4*boxWidth,boxHeight*(Math.floor(i/4)%4),boxWidth,boxHeight);
+    ctx.fillRect(xPos,yPos,boxWidth,boxHeight);
+
+    var num = Math.pow(2,i+4);
+    ctx.font = (90-num.toString().length*10)+"px Arial";
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.fillText(num,xPos+70,yPos+95);
   }
 }
 
