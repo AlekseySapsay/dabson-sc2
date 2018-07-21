@@ -262,3 +262,7 @@ Is it yak shaving to want to publish an npm package to make setting up a simple 
 (2.8-Math.log10(i))
 its not easy being cheesy ;) xxo
 let val = i % 2 == 0 ? 0 : Math.pow( 2, i + 4 );
+
+consider putting the delimiters in your bash / git alias 
+
+there's probably a really cool/efficient way to pass in references to the shiftCombine() function'

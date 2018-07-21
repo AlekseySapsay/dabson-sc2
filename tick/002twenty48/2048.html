@@ -37,7 +37,8 @@ var gameState = [
   0, 0, 0, 0 ];
 
 function setupGame() {
-  gameState[5] = gameState[15] = 2;
+  //@todo randomise this
+  gameState[0] = gameState[4] = gameState[8] = gameState[12] = gameState[15] = 2;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -74,16 +75,16 @@ window.onkeydown = function(e) {
   var d = 68;
 
   if( key===up || key===w ) {
-    //up
+    moveUp()
     console.log('up');
   } else if( key===down || key===s ) {
-    //down
+    moveDown();
     console.log('down');
   } else if( key===left || key===a ) {
-    //left
+    moveLeft();
     console.log('left');
   } else if( key===right || key===d ) {
-    //right
+    moveRight();
     console.log('right');
   } 
 };
@@ -124,6 +125,78 @@ function roundRect(ctx, x, y, width, height, fillStyle, radius) { // Thanks Juan
 
   ctx.fillStyle = fillStyle;
   ctx.fill();
+}
+
+function moveUp() {
+  var col1 = [gameState[12], gameState[8], gameState[4], gameState[0]];
+  var shifted = shiftCombine(col1);
+  console.log('shifted',shifted);
+
+  gameState[12] = shifted[0];
+  gameState[8] = shifted[1];
+  gameState[4] = shifted[2];
+  gameState[0] = shifted[3];
+}
+function moveDown() {
+
+}
+function moveLeft() {
+
+}
+function moveRight() {
+
+}
+
+//array 4d is actually a horrible name. its actually 1d with 4 elements @todo consider rename
+function shiftCombine(array4d) { //shifts/combines to the leftmost element
+  //i think i wanna start from the right and shift the whole array each time
+  //actually lets flip our whole logic so we can do positive iteration 
+  //start from left go to right
+  //if(array4d[3]>0)
+  //return [0,0,0,0];
+
+  //a block should only be combined once per shift cycle
+
+  let ret = array4d.slice();
+  let isCombined = zeros(array4d.length); // keep track of which elements have already been cominbed
+
+  //you should first do the combine step, and then the shift step to close the gaps
+  // combine
+  for( let i=1;i<array4d.length;i++) {
+    let prev = ret[i-1];
+    let isPrevCombined = isCombined[i-1] != 0;
+    let current = ret[i];
+
+    if( prev == 0 ) {
+      continue;
+    }
+
+
+    //combine
+    if(prev == current && !isPrevCombined ) {
+      ret[i-1]=0;
+      ret[i]=prev*2;
+      isCombined[i] = 1; //mark the current cell as combined
+    }
+  }
+
+  // shift (or rather stack)
+  for( let i=array4d.length-2;i>=0;i--) {
+    next
+  }
+
+  return ret;
+}
+
+function stack(array4d) {
+
+}
+
+function zeros(len) {
+  if(typeof len === 'undefined' || len < 1 ) {
+    return [];
+  }
+  return new Array(len+1).join('0').split('').map(parseFloat);
 }
 </script>
 </html>
