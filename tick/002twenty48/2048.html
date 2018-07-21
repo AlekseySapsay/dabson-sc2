@@ -28,16 +28,18 @@ const gameDim = 4;
 const boxMargin = 4; //should be twice the canvas border width (border subsidises outer margin)
 const boxWidth = canvasEl.width / gameDim;
 const boxHeight = canvasEl.height / gameDim;
-const winCond = 8;
-const spawnCount = 4;
+const spawnCount = 2;
+const winCondition = 2048;
 
+var gameTicker;
 var gameIterator = 0;
 var isPlaying = true;
 var gameState = [ 
   0, 0, 0, 0,
   0, 0, 0, 0,
   0, 0, 0, 0,
-  0, 0, 0, 0 ];
+  0, 0, 0, 0 
+];
 
 function setupGame() {
   //@todo randomise this
@@ -98,7 +100,7 @@ window.onkeydown = function(e) {
   let millisecs = 1000/fps;
   document.addEventListener('DOMContentLoaded', x => {
     setupGame();
-    setInterval( updateFrame, millisecs );
+    gameTicker = setInterval( updateFrame, millisecs );
   }, false);
 })();
 
@@ -152,12 +154,12 @@ function repopulate() {
   for(i in gameState) {
     if(!gameState[i]) {
       zeroIndex.push(i);
-    } else if( gameState[i] === winCond ) {
+    } else if( gameState[i] >= winCondition ) {
       endGame('win');
     }
   }
   if(zeroIndex.length<spawnCount) {
-    endGame('fail');
+    endGame('loose');
   }
 
   for(let i=0;i<spawnCount;i++) {
@@ -169,12 +171,20 @@ function repopulate() {
 }
 
 function endGame(status) {
-  if(status='win') {
-
-  } else {
-
-  }
   isPlaying=false;
+  clearInterval(gameTicker);
+
+  let fillStyle="#f00";
+  if(status==='win') {
+    fillStyle="#0f0"
+  }
+  roundRect(ctx, 0, 0, canvasEl.width, canvasEl.height, fillStyle);
+
+  ctx.font = "bold 90px Arial";
+  ctx.fillStyle = "#fff";
+  ctx.textAlign = "center";
+  ctx.fillText('You '+status+'!', canvasEl.width/2, canvasEl.height/2);
+
 }
 
 /* 
