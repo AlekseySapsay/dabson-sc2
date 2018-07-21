@@ -49,7 +49,7 @@ function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
     ctx.font = "bold " + ( 90 - val.toString().length * 10 ) + "px Arial";
     ctx.fillStyle = "#333";
     ctx.textAlign = "center";
-    ctx.fillText(val,xPos+70,yPos+95);
+    ctx.fillText(val,xPos+75,yPos+105);
   }
 }
 
@@ -132,10 +132,10 @@ function moveUp() {
   var shifted = shiftCombine(col1);
   console.log('shifted',shifted);
 
-  gameState[12] = shifted[0];
-  gameState[8] = shifted[1];
-  gameState[4] = shifted[2];
-  gameState[0] = shifted[3];
+  gameState[12] = shifted[3];
+  gameState[8] = shifted[2];
+  gameState[4] = shifted[1];
+  gameState[0] = shifted[0];
 }
 function moveDown() {
 
@@ -147,49 +147,22 @@ function moveRight() {
 
 }
 
-//array 4d is actually a horrible name. its actually 1d with 4 elements @todo consider rename
-function shiftCombine(array4d) { //shifts/combines to the leftmost element
-  //i think i wanna start from the right and shift the whole array each time
-  //actually lets flip our whole logic so we can do positive iteration 
-  //start from left go to right
-  //if(array4d[3]>0)
-  //return [0,0,0,0];
-
-  //a block should only be combined once per shift cycle
-
-  let ret = array4d.slice();
-  let isCombined = zeros(array4d.length); // keep track of which elements have already been cominbed
-
-  //you should first do the combine step, and then the shift step to close the gaps
-  // combine
-  for( let i=1;i<array4d.length;i++) {
-    let prev = ret[i-1];
-    let isPrevCombined = isCombined[i-1] != 0;
-    let current = ret[i];
-
-    if( prev == 0 ) {
+function shiftCombine(arr) {
+  let ret = new Array();
+  for(let i=0;i<(arr.length-1);i++) {
+    let cur = arr[i];
+    let next = arr[i+1];
+    if(cur===0) {
       continue;
-    }
-
-
-    //combine
-    if(prev == current && !isPrevCombined ) {
-      ret[i-1]=0;
-      ret[i]=prev*2;
-      isCombined[i] = 1; //mark the current cell as combined
+    } else if(cur===next) {
+      ret.push(cur*2);
+      i++;
+    } else {
+      ret.push(cur);
     }
   }
 
-  // shift (or rather stack)
-  for( let i=array4d.length-2;i>=0;i--) {
-    next
-  }
-
-  return ret;
-}
-
-function stack(array4d) {
-
+  return ret.concat( zeros( arr.length - ret.length ) );
 }
 
 function zeros(len) {
