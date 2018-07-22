@@ -254,7 +254,7 @@ function shiftCombine(arr, indexMap) {
   }
 
   let row = indexMap.slice().map( i => arr[i] );
-  let animateRow = getTransitionMap( row, indexMap );
+  let animateRow = getTransitionMap( row );
 
   let ret=squashed = squash( row ); //here is the guaranted-to-work stateShift function, but it doesnt produce a transition map which is kinda what we want
   //let padAmount = gameDim - squashed.length;
@@ -267,7 +267,7 @@ function shiftCombine(arr, indexMap) {
   }
 }
 
-function getTransitionMap( row, indexMap ) {
+function getTransitionMap( row, showLogging=false ) {
   let zeroMap = sequence(gameDim);
 
   let cur = row[0];
@@ -306,7 +306,7 @@ function getTransitionMap( row, indexMap ) {
     //console.log(result.join('-'));
   }
 
-  if( indexMap===null ) {
+  if( showLogging ) {
     console.log(row.join(),'--(',zeroMap.join(),')--',result.join());
     return;
   }
@@ -479,10 +479,11 @@ function leftPad( arr, amount ) {
     let transOutput = getTransitionMap(testInput);
 
     if( arraysEqual(squashOutput,transOutput) ) {
-      console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
+      //console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
       passCount++;
     } else {
       console.error('input failed',testInput.join('-'),' :: s/t =',squashOutput.join('-'),'!==',transOutput.join('-'));
+      getTransitionMap(testInput, true);
       failCount++;
     }
   }
