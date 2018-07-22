@@ -201,7 +201,7 @@ function repopulate() {
   }
 
   for(let i=0;i<spawnCount;i++) {
-    let randIndex = Math.floor(Math.random() * zeroIndex.length);
+    let randIndex = randInt( zeroIndex.length );
     let val = gameState[zeroIndex[randIndex]];
     val = val === 0 ? 2 : val * 2;
     gameState[zeroIndex[randIndex]] = val;
@@ -268,12 +268,15 @@ function shiftCombine(arr, indexMap) {
 }
 
 function getTransitionMap( row, showLogging=false ) {
-  let transMap = sequence(gameDim);
+  let transMap = sequence(gameDim); // index mappings
+  let result = zeros(gameDim);      // values
 
   for(let i=1;i<gameDim;i++) {
     let ii = gameDim-1-i;
 
-
+    if(row[ii+1]===row[ii]) {
+      transMap[ii]++;
+    }
   }
 
   //console.log(ii,i);
@@ -311,7 +314,7 @@ function getTransitionMap( row, showLogging=false ) {
   // console.log('n rn',nth,row[nth])
   // console.log(result.join('-'));
 
-  let result = zeros(gameDim); //result is the actual values, zeroMap/transMap is the mapping
+  //result is the actual values, zeroMap/transMap is the mapping
   for(let i=0;i<gameDim;i++) {
     let nth = transMap[i];
     result[nth]+=row[i]; 
@@ -321,7 +324,7 @@ function getTransitionMap( row, showLogging=false ) {
     console.log(row.join(),'--(',transMap.join(),')--',result.join());
     return;
   }
-  return result.reverse();
+  return result;
 
   //squash is gold standard, be like squash()
   // ZERO MAP IS NOW TRANSITION / ANIMATION MAP!!!!!!!!!!!
@@ -430,6 +433,11 @@ function sequence(n) {
   return Array.apply(null, {length: n}).map(Number.call, Number);
 }
 
+//can be up to, but not including n
+function randInt(n) {
+  return Math.floor(Math.random() * n);
+}
+
 //remove all zero & falsy values from an array
 function compress(arr) {
   let ret = new Array();
@@ -489,7 +497,7 @@ function leftPad( arr, amount ) {
     let transOutput = getTransitionMap(testInput);
 
     if( arraysEqual(squashOutput,transOutput) ) {
-      //console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
+      console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
       passCount++;
     } else {
       console.error('input failed',testInput.join('-'),' :: s/t =',squashOutput.join('-'),'!==',transOutput.join('-'));
