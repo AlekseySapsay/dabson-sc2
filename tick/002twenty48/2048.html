@@ -314,8 +314,8 @@ function getTransitionMap( row, showLogging=false ) {
   //squash adjacent
   noZeros = 0;
   for(let i=gameDim-1;i>=0;i--) {
-    let cur = row[transMap[i]];
-    let next = row[transMap[i]+1];
+    let cur = row[transMap[i+noZeros]];
+    let next = row[transMap[i+noZeros]+1];
 
     if(next && next===cur) {
       console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
