@@ -321,7 +321,7 @@ function getTransitionMap( row, showLogging=false ) {
       console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
       noZeros++; //squishy!
     }
-    transMap[i]+=noZeros;
+    transMap[i]+=noZeros; //Math.min(transMap[i]+noZeros,lim);
   }
 
   //compress again
