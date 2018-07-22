@@ -269,23 +269,23 @@ function shiftCombine(arr, indexMap) {
 function getTransitionMap( row, indexMap ) {
   let zeroMap = sequence(gameDim);
 
-  let curVal = row[0];
+  let cur = row[0];
   for(let i=j=0,next=nextNonZeroth( row, i );next!=null && i<gameDim;i++) {
     // console.log('i,next=',i,next)
-    curVal = row[zeroMap[j]];
+    cur = row[zeroMap[j]];
     j = next.index;
     
     // move if empty
-    if(!curVal) {
+    if(!cur) {
       //console.log('move');
       zeroMap[next.index] = i;
       next = nextNonZeroth( row, j );
       if (next==null) break;
-      curVal = row[zeroMap[j]];
+      cur = row[j];
       j = next.index;
     } //else { console.log('noMove i,j,cur',i,j,cur)}
 
-    if (curVal == next.value) { //squash
+    if (cur == next.value) { //squash
       //console.log('sqaush');
       zeroMap[next.index] = i;
       j = next.index;
