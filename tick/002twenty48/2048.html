@@ -268,34 +268,44 @@ function shiftCombine(arr, indexMap) {
 }
 
 function getTransitionMap( row, showLogging=false ) {
-  let zeroMap = sequence(gameDim);
+  let transMap = sequence(gameDim);
 
-//--------------------------------------------------- YOUR CODE HERE
-  let cur = row[0];
-  for(let i=j=0,next=nextNonZeroth( row, i );next!=null && i<gameDim;i++) {
-    // console.log('i,next=',i,next)
-    cur = row[zeroMap[j]];
-    j = next.index;
-    //console.log(i,j,cur)
-    
-    // move if empty
-    if(!cur) {
-      //console.log('move');
-      zeroMap[next.index] = i;
-      next = nextNonZeroth( row, j );
-      if (next==null) break;
-      cur = row[j];
-      j = next.index;
-    } //else { console.log('noMove i,j,cur',i,j,cur)}
+  for(let i=1;i<gameDim;i++) {
+    let ii = gameDim-1-i;
 
-    if (cur == next.value) { //squash
-      //console.log('sqaush');
-      zeroMap[next.index] = i;
-      j = next.index;
-      next=nextNonZeroth(row,j);
-    }
 
   }
+
+  //console.log(ii,i);
+  // if(row[ii]!=0 && row[ii+1] == 0 || row[ii+1]==row[ii]) {
+  //   transMap[ii]++;
+  // }
+//--------------------------------------------------- YOUR CODE HERE
+  // let cur = row[0];
+  // for(let i=j=0,next=nextNonZeroth( row, i );next!=null && i<gameDim;i++) {
+  //   // console.log('i,next=',i,next)
+  //   cur = row[zeroMap[j]];
+  //   j = next.index;
+  //   //console.log(i,j,cur)
+    
+  //   // move if empty
+  //   if(!cur) {
+  //     //console.log('move');
+  //     zeroMap[next.index] = i;
+  //     next = nextNonZeroth( row, j );
+  //     if (next==null) break;
+  //     cur = row[j];
+  //     j = next.index;
+  //   } //else { console.log('noMove i,j,cur',i,j,cur)}
+
+  //   if (cur == next.value) { //squash
+  //     //console.log('sqaush');
+  //     zeroMap[next.index] = i;
+  //     j = next.index;
+  //     next=nextNonZeroth(row,j);
+  //   }
+
+  // }
 //--------------------------------------------------- END
   // zeroMap = zeroMap.reverse(); //saves us having to backwards count
   // console.log('n rn',nth,row[nth])
@@ -303,12 +313,12 @@ function getTransitionMap( row, showLogging=false ) {
 
   let result = zeros(gameDim); //result is the actual values, zeroMap/transMap is the mapping
   for(let i=0;i<gameDim;i++) {
-    let nth = zeroMap[i];
+    let nth = transMap[i];
     result[nth]+=row[i]; 
   }
 
   if( showLogging ) {
-    console.log(row.join(),'--(',zeroMap.join(),')--',result.join());
+    console.log(row.join(),'--(',transMap.join(),')--',result.join());
     return;
   }
   return result.reverse();
@@ -356,17 +366,17 @@ function getTransitionMap( row, showLogging=false ) {
   // return ret;
 }
 
-function nextNonZeroth( row, currentIndex ) { //return the next non-zero element
-  for(let i=currentIndex+1;i<row.length;i++) {
-    if(row[i]) {
-      return {
-        index: i,
-        value: row[i]
-      };
-    }
-  }
-  return null;
-}
+// function nextNonZeroth( row, currentIndex ) { //return the next non-zero element
+//   for(let i=currentIndex+1;i<row.length;i++) {
+//     if(row[i]) {
+//       return {
+//         index: i,
+//         value: row[i]
+//       };
+//     }
+//   }
+//   return null;
+// }
 
 // function getAnimationMap( row, indexMap ) {
 //   let zeroMap = sequence(gameDim);
