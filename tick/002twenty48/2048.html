@@ -274,6 +274,7 @@ function getTransitionMap( row, indexMap ) {
     // console.log('i,next=',i,next)
     cur = row[zeroMap[j]];
     j = next.index;
+    console.log(i,j,cur)
     
     // move if empty
     if(!cur) {
@@ -289,10 +290,9 @@ function getTransitionMap( row, indexMap ) {
       //console.log('sqaush');
       zeroMap[next.index] = i;
       j = next.index;
-    } 
+      next=nextNonZeroth(row,j);
+    }
 
-    //console.log(i,j)
-    next=nextNonZeroth(row,j);
   }
 
   let result = zeros(gameDim);
