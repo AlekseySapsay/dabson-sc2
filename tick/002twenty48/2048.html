@@ -46,7 +46,7 @@ var gameState = [
   0, 0, 0, 0 
 ]; // aka zeros(16)
 var oldState;
-var transitionState;
+var animateState;
 
 function setupGame() {
   repopulate();
@@ -225,6 +225,8 @@ function endGame(status) {
  */
 function mapIndexAndStack(lambda) {
   oldState = gameState.slice();
+  animateState = zeros(gameSize);
+
   for(let i=0;i<gameDim;i++) {
     let indexMap = new Array();
     for(let j=0;j<gameDim;j++) {
@@ -246,14 +248,44 @@ function shiftCombine(arr, indexMap) {
   }
 
   let row = indexMap.slice().map( i => arr[i] );
-
-  let squashed = squash(row);
-
+  let squashed = squash( row );
+  let animateRow = getAnimationMap( row, squashed, indexMap );
   let ret = leftPad( squashed, gameDim - squashed.length );
-  
+
   for( i in ret ) {
-    arr[indexMap[i]] = ret[i];
+    let x = indexMap[i];
+    arr[x] = ret[i];
+    animateState[x] = animateRow[i];
   }
+}
+
+// row is a list of all the pre values 
+// squashed is a non-padded version of the post values 
+// index map is the space within the gameState we're working in
+function getAnimationMap(row, squashed, indexMap) {
+  // You actually want to return the gameState indecies
+  // Ok, we'll use our row as the mask - squashed.length SHOULD BE <= row.length (ie not always equal)
+
+  let zeroMap = sequence(gameDim);
+
+  //for(let i=squashed.length-2;i>=0;i--) {  }
+  let noSquashed = 0;
+  for( i in squashed ) {
+    let ii = row.length - 1 - i - noSquashed;
+
+    if(row[ii] === squashed[i]) {
+      zeroMap[i+noSquashed] = ii; 
+      continue;
+    } else if(row[ii] === 2 * squashed[i]) {
+      zeroMap[i+noSquashed] = ii; 
+      noSquashed++;
+      zeroMap[i+noSquashed] = ii; 
+    }
+  }
+
+  let ret = zeroMap.map(x => {return indexMap[x]} );
+  console.log('animationMap: ',ret);
+  return ret;
 }
 
 function zeros(len) {
@@ -261,6 +293,11 @@ function zeros(len) {
     return [];
   }
   return new Array(len+1).join('0').split('').map(parseFloat);
+}
+
+// Generates a sequence from 0..n-1
+function sequence(n) {
+  return Array.apply(null, {length: n}).map(Number.call, Number);
 }
 
 //remove all zero & falsy values from an array
