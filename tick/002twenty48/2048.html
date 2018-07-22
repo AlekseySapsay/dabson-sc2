@@ -296,30 +296,35 @@ function shiftCombine(arr, indexMap) {
 // }
 
 function getTransitionMap( row, showLogging=false ) {
+  let lim = gameDim-1;
   let transMap = sequence(gameDim); // index mappings
   let result = zeros(gameDim);      // values
   let noZeros = 0;
 
   //compress
-  for(let i=gameDim-1;i>=0;i--) {
+  for(let i=lim;i>=0;i--) {
     let cur = row[transMap[i]];
     if(!cur) {
       noZeros++;
-    } else {
-      transMap[i]+=noZeros;
     }
+    transMap[i]=Math.min(transMap[i]+noZeros,lim);
   }
 
+  if(showLogging) console.log(transMap.join('*'));
   //squash adjacent
+  noZeros = 0;
   for(let i=gameDim-1;i>=0;i--) {
     let cur = row[transMap[i]];
-    let next = row[transMap[i+1]];
+    let next = row[transMap[i]+1];
 
     if(next && next===cur) {
-      transMap[i]++;
+      console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
+      noZeros++; //squishy!
     }
+    transMap[i]+=noZeros;
   }
 
+  //compress again
 
   // for(let i=gameDim-2;i>=0;i--) {
   //   let curVal = row[transMap[i]];

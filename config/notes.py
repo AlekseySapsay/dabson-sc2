@@ -380,3 +380,6 @@ BEWARE THE FOR..IN ITERATOR -> ITS A STRING.
 http://scrambledeggsontoast.github.io/2014/05/09/writing-2048-elm/
 
 no commits till >121
+
+jamin'' Yahel and Infected Mushroom 30:00 * * * * *
+
