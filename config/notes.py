@@ -378,3 +378,5 @@ BEWARE THE FOR..IN ITERATOR -> ITS A STRING.
   // Ok, we'll use our row as the mask - squashed.length SHOULD BE <= row.length (ie not always equal)
 
 http://scrambledeggsontoast.github.io/2014/05/09/writing-2048-elm/
+
+no commits till >121

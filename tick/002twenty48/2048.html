@@ -267,20 +267,102 @@ function shiftCombine(arr, indexMap) {
   }
 }
 
+//nextPrevNonZerothIndex
+// function zuccyBoi( row, transMap, currentIndex ) {
+//   // for(let i=currentIndex+1;i<row.length;i++) {
+//   //   if(row[i]) {
+//   //     return i;
+//   //   }
+//   // }
+//   //return transMap[currentIndex+1]
+
+//   for(let i=currentIndex+1;i<row.length;i++) {
+//     if(row[transMap[i]]) {
+//       return i;
+//     }
+//   }
+
+//   return row.length-1;
+// }
+
+//fzo = fatherest zero element 
+// function fzi( row, transMap, curIndex ) {
+//   for(let i=curIndex+1;i<row.length-1;i++) {
+//     if(row[transMap[i]]) {
+//       return i-1;
+//     }
+//   }
+//   return row.length-1;
+// }
+
 function getTransitionMap( row, showLogging=false ) {
   let transMap = sequence(gameDim); // index mappings
   let result = zeros(gameDim);      // values
+  let noZeros = 0;
 
-  for(let i=1;i<gameDim;i++) {
-    let ii = gameDim-1-i;
-    let curVal = row[transMap[ii]];
-    let nextVal = row[transMap[ii+1]];
+  for(let i=gameDim-1;i>=0;i--) {
+    if(!row[transMap[i]]) {
+      noZeros++;
+    } else {
+      transMap[i]+=noZeros;
+    }
+
+  }
+
+  // for(let i=gameDim-2;i>=0;i--) {
+  //   let curVal = row[transMap[i]];
+  //   let nextIndex = fzi( row, transMap, i );
+  //   let iDiff = nextIndex - i;
+  //   transMap[i] += iDiff;
+  // }
+
+  // for(let shifts=0,curIndex=gameDim-2;curIndex>=0;curIndex--) {
+  //   let curVal = row[transMap[curIndex]];
+  //   if(!curVal) continue;
+
+  //   let nextIndex = zuccyBoi( row, transMap, curIndex);
+  //   let nextVal = row[transMap[nextIndex]];
+  //   let iDiff = nextIndex-curIndex;
+
+  //   if(!nextVal || nextVal === curVal) {
+  //     console.log('assigning',transMap[curIndex]);
+  //     transMap[transMap[curIndex]]+=iDiff+shifts;
+  //     shifts++;
+  //   }
+  // }
+
+
+/*
+    let curIndex = gameDim-1-i;
+    let curVal = row[transMap[curIndex]];
+    let nextIndex = zuccyBoi( row, transMap, curIndex );
+    let nextVal = row[transMap[nextIndex]];
+    let iDiff = nextIndex-curIndex;
+    let shifts = 0;
+
+    console.log((nextIndex-curIndex));
     if(!curVal) continue;
 
-    if( !nextVal || curVal==nextVal ) {
-      transMap[ii]++;
+    if( !nextVal || curVal===nextVal ) { //!nextVal || 
+      transMap[curIndex]+=iDiff+shifts;
+      shifts++;
     }
-  }
+    */
+  //closish 
+  // for(let i=1;i<gameDim;i++) {
+  //   let curIndex = gameDim-1-i;
+  //   let curVal = row[transMap[curIndex]];
+
+  //   //let nextVal = row[transMap[curIndex+1]];
+  //   let nextIndex = zuccyBoi( row, transMap, curIndex );
+  //   let nextVal = row[transMap[nextIndex]];
+  //   console.log((nextIndex-curIndex));
+  //   if(!curVal) continue;
+
+  //   if( curVal===nextVal ) { //!nextVal || 
+  //     transMap[curIndex]++; //=(nextIndex-curIndex);
+  //   }
+  // }
 
   //console.log(ii,i);
   // if(row[ii]!=0 && row[ii+1] == 0 || row[ii+1]==row[ii]) {
