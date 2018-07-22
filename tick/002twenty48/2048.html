@@ -34,7 +34,7 @@ const winCondition = 2048;
 const fps = 50;
 const transitionTicks = 10;
 const millisecs = 1000/fps;
-const transitionsEnabled = false;
+const isAnimationEnabled = true;
 
 var gameInterval;
 var gameIterator = 0;
@@ -58,7 +58,7 @@ function isPlaying() {
 }
 
 function isTransitioning() {
-  return transitionsEnabled && gameIterator < 0;
+  return isAnimationEnabled && gameIterator < 0;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -249,8 +249,8 @@ function shiftCombine(arr, indexMap) {
 
   let squashed = squash(row);
 
-  // Left-pad
-  let ret = zeros( gameDim - squashed.length ).concat( squashed );
+  let ret = leftPad( squashed, gameDim - squashed.length );
+  
   for( i in ret ) {
     arr[indexMap[i]] = ret[i];
   }
@@ -287,6 +287,13 @@ function squash(row) {
     }
   }
   return compress(unsquashed);
+}
+
+function leftPad( arr, amount ) {
+  if(!amount || amount<1) {
+    return arr;
+  }
+  return zeros( amount ).concat( arr );
 }
 
 </script>
