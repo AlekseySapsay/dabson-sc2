@@ -254,10 +254,11 @@ function shiftCombine(arr, indexMap) {
   }
 
   let row = indexMap.slice().map( i => arr[i] );
-  let animateRow = getTransitionMap( row, indexMap );
-  let squashed = squash( row );
-  let padAmount = gameDim - squashed.length;
-  let ret = leftPad( squashed, padAmount );
+  let ret=animateRow = getTransitionMap( row, indexMap );
+
+  //let squashed = squash( row ); //here is the guaranted-to-work stateShift function, but it doesnt produce a transition map which is kinda what we want
+  //let padAmount = gameDim - squashed.length;
+  //let ret = leftPad( squashed, padAmount ); //PUT THIS IN FUNC
 
   for( i in ret ) {
     let x = indexMap[i];
@@ -274,7 +275,7 @@ function getTransitionMap( row, indexMap ) {
     // console.log('i,next=',i,next)
     cur = row[zeroMap[j]];
     j = next.index;
-    console.log(i,j,cur)
+    //console.log(i,j,cur)
     
     // move if empty
     if(!cur) {
@@ -295,6 +296,8 @@ function getTransitionMap( row, indexMap ) {
 
   }
 
+  //zeroMap = zeroMap.reverse(); //saves us having to backwards count
+
   let result = zeros(gameDim);
   for(let i=0;i<gameDim;i++) {
     let nth = zeroMap[i];
@@ -307,6 +310,18 @@ function getTransitionMap( row, indexMap ) {
     console.log(row.join(),'--(',zeroMap.join(),')--',result.join());
     return;
   }
+
+
+  // ZERO MAP IS NOW TRANSITION / ANIMATION MAP!!!!!!!!!!!
+  // rESULT IS THE VALUES< NOT THE INDICES
+
+  //return result.map(x=>{return gameDim-1-x});
+  //we want to translate the local [0,4) map into the stateSpace map
+  // formerly let ret = zeroMap.map(x => {return indexMap[gameDim-x]} );
+
+  //console.log(indexMap, zeroMap, result);
+  //let ret = zeroMap.map(x => {return indexMap[x]} );
+  return result;
 
   // if(next!=null) {
   //   for(let i=0;i<gameDim;i++) {
@@ -335,9 +350,9 @@ function getTransitionMap( row, indexMap ) {
   //   //j++;
   // }
 
-  console.log(zeroMap);
-  let ret = zeroMap.map(x => {return indexMap[gameDim-x]} );
-  return ret;
+  // console.log(zeroMap);
+  // let ret = zeroMap.map(x => {return indexMap[gameDim-x]} );
+  // return ret;
 }
 
 function nextNonZeroth( row, currentIndex ) { //return the next non-zero element
@@ -427,7 +442,8 @@ function squash(row) {
       unsquashed[i-1] = 0;
     }
   }
-  return compress(unsquashed);
+  let squashed = compress(unsquashed);
+  return leftPad(squashed, gameDim-squashed.length);
 }
 
 function leftPad( arr, amount ) {
@@ -438,13 +454,55 @@ function leftPad( arr, amount ) {
 }
 
 (function test() {
-  getTransitionMap( [2,0,4,8], null);
-  getTransitionMap( [0,2,0,2], null);
-  getTransitionMap( [0,2,2,4], null);
-  getTransitionMap( [2,0,0,0], null);
-  getTransitionMap( [0,0,0,2], null);
+  //getTransitionMap( [2,0,4,8], null);
+  //getTransitionMap( [0,2,0,2], null);
+  //getTransitionMap( [0,2,2,4], null);
+  //getTransitionMap( [2,0,0,0], null);
+  //getTransitionMap( [0,0,0,2], null);
+
+  console.log('filthyboi test');
+
+  let passCount=failCount=0;
+
+  for(let i=0;i<256;i++) {
+    let a = Math.floor(i/64)%4;
+    let b = Math.floor(i/16)%4;
+    let c = Math.floor(i/4)%4;
+    let d = i%4;
+    let testInput = [a,b,c,d].map(x=>{return x==0?0:Math.pow(2,x)});
+    //console.log(testInput);
+
+    let squashOutput = squash(testInput);
+    let transOutput = getTransitionMap(testInput);
+
+    if( arraysEqual(squashOutput,transOutput) ) {
+      console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
+      passCount++;
+    } else {
+      console.log('input failed ',testInput.join('-'),' :: ',squashOutput.join('-'),'!==',transOutput.join('-'));
+      failCount++;
+    }
+  }
+  console.log('-----')
+  console.log('passed',passCount);
+  console.log('failed',failCount);
 })()
 
+
+//@todo test function, remove
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
 
 </script>
 </html>
