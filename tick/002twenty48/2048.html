@@ -270,6 +270,7 @@ function shiftCombine(arr, indexMap) {
 function getTransitionMap( row, showLogging=false ) {
   let zeroMap = sequence(gameDim);
 
+//--------------------------------------------------- YOUR CODE HERE
   let cur = row[0];
   for(let i=j=0,next=nextNonZeroth( row, i );next!=null && i<gameDim;i++) {
     // console.log('i,next=',i,next)
@@ -295,25 +296,24 @@ function getTransitionMap( row, showLogging=false ) {
     }
 
   }
+//--------------------------------------------------- END
+  // zeroMap = zeroMap.reverse(); //saves us having to backwards count
+  // console.log('n rn',nth,row[nth])
+  // console.log(result.join('-'));
 
-  //zeroMap = zeroMap.reverse(); //saves us having to backwards count
-
-  let result = zeros(gameDim);
+  let result = zeros(gameDim); //result is the actual values, zeroMap/transMap is the mapping
   for(let i=0;i<gameDim;i++) {
     let nth = zeroMap[i];
     result[nth]+=row[i]; 
-    //console.log('n rn',nth,row[nth])
-    //console.log(result.join('-'));
   }
 
   if( showLogging ) {
     console.log(row.join(),'--(',zeroMap.join(),')--',result.join());
     return;
   }
-
-  //squash is gold standard, be like squash()
   return result.reverse();
 
+  //squash is gold standard, be like squash()
   // ZERO MAP IS NOW TRANSITION / ANIMATION MAP!!!!!!!!!!!
   // rESULT IS THE VALUES< NOT THE INDICES
 
