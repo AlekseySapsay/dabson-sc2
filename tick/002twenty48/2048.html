@@ -274,7 +274,7 @@ function getTransitionMap( row, showLogging=false ) {
   for(let i=1;i<gameDim;i++) {
     let ii = gameDim-1-i;
 
-    if(row[ii+1]===row[ii] || !row[ii+1] && !!row[ii]) {
+    if(row[transMap[ii+1]]===row[transMap[ii]] || !row[transMap[ii+1]] && !!row[transMap[ii]]) {
       transMap[ii]++;
     }
   }
