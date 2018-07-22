@@ -318,7 +318,7 @@ function getTransitionMap( row, showLogging=false ) {
     let next = row[transMap[i+noZeros]+1];
 
     if(next && next===cur) {
-      console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
+      if(showLogging) console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
       noZeros++; //squishy!
     }
     transMap[i]+=noZeros; //Math.min(transMap[i]+noZeros,lim);
