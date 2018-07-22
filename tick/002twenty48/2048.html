@@ -311,6 +311,8 @@ function getTransitionMap( row, indexMap ) {
     return;
   }
 
+  //squash is gold standard, be like squash()
+  return result.reverse();
 
   // ZERO MAP IS NOW TRANSITION / ANIMATION MAP!!!!!!!!!!!
   // rESULT IS THE VALUES< NOT THE INDICES
@@ -321,7 +323,6 @@ function getTransitionMap( row, indexMap ) {
 
   //console.log(indexMap, zeroMap, result);
   //let ret = zeroMap.map(x => {return indexMap[x]} );
-  return result;
 
   // if(next!=null) {
   //   for(let i=0;i<gameDim;i++) {
@@ -479,7 +480,7 @@ function leftPad( arr, amount ) {
       console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
       passCount++;
     } else {
-      console.log('input failed ',testInput.join('-'),' :: ',squashOutput.join('-'),'!==',transOutput.join('-'));
+      console.error('input failed ',testInput.join('-'),' :: ',squashOutput.join('-'),'!==',transOutput.join('-'));
       failCount++;
     }
   }
