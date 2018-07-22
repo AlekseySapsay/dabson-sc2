@@ -311,20 +311,81 @@ function getTransitionMap( row, showLogging=false ) {
   }
 
   if(showLogging) console.log(transMap.join('*'));
-  //squash adjacent
-  noZeros = 0;
-  for(let i=gameDim-1;i>=0;i--) {
-    let cur = row[transMap[i+noZeros]];
-    let next = row[transMap[i+noZeros]+1];
+  for(let i=lim;i>=0;i--) {
+    let curI = transMap[i];
+    let preI = curI-1;
+    let cur = row[curI];
+    let prev = row[preI];
 
-    if(next && next===cur) {
-      if(showLogging) console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
-      noZeros++; //squishy!
+    if(cur && cur===prev) {
+      if(showLogging) console.log('squishy',prev,'[',preI,'] into ',cur,'[',curI,']');
+      transMap[curI-1]++;
+      i--;
     }
-    transMap[i]+=noZeros; //Math.min(transMap[i]+noZeros,lim);
   }
+  if(showLogging) console.log(transMap.join('~'));
+
+/* ok
+  if(showLogging) console.log(transMap.join('*'));
+  for(let i=0;i<lim-1;i++) {
+    let curI = transMap[i];
+    let nexI = transMap[i+1];
+    let cur = row[curI];
+    let next = row[nexI];
+
+    if(cur && cur===next) {
+      if(showLogging) console.log('squishy',cur,'[',curI,'] into ',next,'[',nexI,']');
+      transMap[i]++;
+      i++;
+    }
+  }
+  if(showLogging) console.log(transMap.join('~'));
+  */
+
+  //squash adjacent
+  //noZeros = 1;
+  // for(let i=lim-1;i>=0;i--) {
+  //   let curI = transMap[i];
+  //   let nexI = transMap[i+1];
+
+  //   let cur = row[curI];
+  //   let next = row[nexI];
+
+  //   if(next && next===cur) {
+  //     if(showLogging) console.log('squishy',cur,'[',curI,'] into ',next,'[',nexI,']');
+  //     //noZeros++; //squishy!
+  //     transMap[i]++; //+=noZeros; //Math.min(transMap[i]+noZeros,lim);
+  //   }
+  // }
+
+  // if(showLogging) console.log(transMap.join('*'));
+  // for(let i=0;i<lim-1;i++) {
+  //   let curI = transMap[i];
+  //   let nexI = transMap[i+1];
+  //   let cur = row[curI];
+  //   let next = row[nexI];
+
+  //   if(cur && cur===next) {
+  //     if(showLogging) console.log('squishy',cur,'[',curI,'] into ',next,'[',nexI,']');
+  //     transMap[i]++;
+  //     i++;
+  //   }
+  // }
+  // if(showLogging) console.log(transMap.join('~'));
 
   //compress again
+  // noZeros = 0;
+  // for(let i=lim;i>=0;i--) {
+  //   let curI = transMap[i];
+  //   let cur = row[curI];
+  //   if(!cur) {
+  //     console.log('zero at',curI)
+  //     noZeros++;
+  //   } else {
+  //     transMap[i]+=noZeros;
+  //   }
+  // }
+
 
   // for(let i=gameDim-2;i>=0;i--) {
   //   let curVal = row[transMap[i]];

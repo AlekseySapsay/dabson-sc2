@@ -381,5 +381,8 @@ http://scrambledeggsontoast.github.io/2014/05/09/writing-2048-elm/
 
 no commits till >121
 
-jamin'' Yahel and Infected Mushroom 30:00 * * * * *
+jamin'' Yahel and Infected Mushroom 30:00 + 54 * * * * *
 
+0-8-8-8 aint being squished 
+
+there's a reason you cant squish from the right - an odd number will sqish the wrong way
