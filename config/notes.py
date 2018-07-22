@@ -301,3 +301,80 @@ perhaps make a transition map
 the fail condition is a bit premature perhaps..
 
 BEWARE THE FOR..IN ITERATOR -> ITS A STRING.
+
+  for(let i=0,j=padAmount;i<gameDim;i++) {
+    let r = row[i]; // row value 
+    if(!r) continue;
+
+    zeroMap[i] = j
+
+    if((j+1)<gameDim && ) { //initially (j+1)<squashed.length
+      j++;
+    }
+  }
+
+    //for(let i=squashed.length-2;i>=0;i--) {  }
+  // let noSquashed = 0;
+  // for( i in squashed ) {
+  //   let ii = row.length - 1 - i - noSquashed;
+
+  //   if(row[ii] === squashed[i]) {
+  //     zeroMap[i+noSquashed] = ii; 
+  //     continue;
+  //   } else if(row[ii] === 2 * squashed[i]) {
+  //     zeroMap[i+noSquashed] = ii; 
+  //     noSquashed++;
+  //     zeroMap[i+noSquashed] = ii; 
+  //   }
+  // }
+
+  // let spaces = 0;
+  // let postSpaces = padAmount - 1;
+  // for(let i=0;i<gameDim;i++) {
+  //   let r = row[i]; // row value 
+  //   if(r!==0) {
+  //     let s = squashed[i-spaces-postSpaces-1];
+
+  //     if(r===s) {
+  //       console.log('aa');
+  //       zeroMap[i] = i+postSpaces;
+  //     } else if( r === (2 * s) ) {
+  //       console.log('bb');
+  //       zeroMap[i] = i+postSpaces;
+  //       i++;
+  //       zeroMap[i] = i+postSpaces;
+  //     } else {
+  //       console.log('ccrsi ',r,s,i);
+  //       console.log('squashed,i,s,i-spaces: ',squashed,i,s,i-spaces);
+  //     }
+
+  //   } else {
+  //     spaces++;
+  //   }
+  // }
+
+  //let spaces = padAmount - 1;
+
+  // let lastElVal = -1;
+  // for(let i=j=0;i<gameDim-1);i++) {
+  //   let r = row[i]; // row value 
+  //   if(!r) continue;
+  //   let jj = padAmount + j;
+
+  //   zeroMap[i] = jj;
+
+  //   if((jj+1)<gameDim) { //initially (j+1)<squashed.length
+  //     j++;
+  //   }
+  //   lasteElVal = squashed[j]
+  // }
+
+  //zeroMap.map( x => { return })
+
+    // row is a list of all the pre values 
+  // squashed is a non-padded version of the post values 
+  // index map is the space within the gameState we're working in
+  // You actually want to return the gameState indices
+  // Ok, we'll use our row as the mask - squashed.length SHOULD BE <= row.length (ie not always equal)
+
+http://scrambledeggsontoast.github.io/2014/05/09/writing-2048-elm/

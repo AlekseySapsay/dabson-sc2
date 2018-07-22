@@ -49,11 +49,11 @@ var oldState;
 var animateState;
 
 function setupGame() {
-  //repopulate();
-
-  //@todo remove after testing
-  gameState[1] = gameState[2] = 2;
+  // repopulate();
+  // @todo remove after testing
+  gameState[1] = gameState[2] /*= gameState[4]*/ = 2;
   gameState[3] = 4;
+  // ---------
 
   oldState = gameState.slice();
 }
@@ -192,12 +192,12 @@ function repopulate() {
     if(!gameState[i]) {
       zeroIndex.push(i);
     } else if( gameState[i] >= winCondition ) {
-      endGame('win');
+      endGame('You won!');
     }
   }
 
   if(zeroIndex.length<spawnCount) {
-    endGame('loose');
+    endGame('Game over!');
   }
 
   for(let i=0;i<spawnCount;i++) {
@@ -213,7 +213,7 @@ function endGame(status) {
   clearInterval(gameInterval);
 
   let fillStyle="#e00";
-  if(status==='win') {
+  if(status==='You won!') {
     fillStyle="#0e0"
   }
   roundRect(ctx, 0, 0, canvasEl.width, canvasEl.height, fillStyle);
@@ -221,7 +221,7 @@ function endGame(status) {
   ctx.font = "bold 90px Arial";
   ctx.fillStyle = "#fff";
   ctx.textAlign = "center";
-  ctx.fillText('You '+status+'!', canvasEl.width/2, canvasEl.height/2);
+  ctx.fillText(status, canvasEl.width/2, canvasEl.height/2);
 }
 
 /* 
@@ -232,6 +232,7 @@ function mapIndexAndStack(lambda) {
   oldState = gameState.slice();
   animateState = zeros(gameSize);
 
+  console.log('---');
   for(let i=0;i<gameDim;i++) {
     let indexMap = new Array();
     for(let j=0;j<gameDim;j++) {
@@ -253,9 +254,9 @@ function shiftCombine(arr, indexMap) {
   }
 
   let row = indexMap.slice().map( i => arr[i] );
+  let animateRow = getTransitionMap( row, indexMap );
   let squashed = squash( row );
   let padAmount = gameDim - squashed.length;
-  let animateRow = getAnimationMap( padAmount, row, squashed, indexMap );
   let ret = leftPad( squashed, padAmount );
 
   for( i in ret ) {
@@ -265,72 +266,131 @@ function shiftCombine(arr, indexMap) {
   }
 }
 
-// row is a list of all the pre values 
-// squashed is a non-padded version of the post values 
-// index map is the space within the gameState we're working in
-function getAnimationMap( padAmount, row, squashed, indexMap ) {
-  // You actually want to return the gameState indices
-  // Ok, we'll use our row as the mask - squashed.length SHOULD BE <= row.length (ie not always equal)
-
+function getTransitionMap( row, indexMap ) {
   let zeroMap = sequence(gameDim);
 
-  //for(let i=squashed.length-2;i>=0;i--) {  }
-  // let noSquashed = 0;
-  // for( i in squashed ) {
-  //   let ii = row.length - 1 - i - noSquashed;
+  let curVal = row[0];
+  for(let i=j=0,next=nextNonZeroth( row, i );next!=null && i<gameDim;i++) {
+    // console.log('i,next=',i,next)
+    curVal = row[zeroMap[j]];
+    j = next.index;
+    
+    // move if empty
+    if(!curVal) {
+      //console.log('move');
+      zeroMap[next.index] = i;
+      next = nextNonZeroth( row, j );
+      if (next==null) break;
+      curVal = row[zeroMap[j]];
+      j = next.index;
+    } //else { console.log('noMove i,j,cur',i,j,cur)}
 
-  //   if(row[ii] === squashed[i]) {
-  //     zeroMap[i+noSquashed] = ii; 
-  //     continue;
-  //   } else if(row[ii] === 2 * squashed[i]) {
-  //     zeroMap[i+noSquashed] = ii; 
-  //     noSquashed++;
-  //     zeroMap[i+noSquashed] = ii; 
-  //   }
-  // }
+    if (curVal == next.value) { //squash
+      //console.log('sqaush');
+      zeroMap[next.index] = i;
+      j = next.index;
+    } 
 
-  // let spaces = 0;
-  // let postSpaces = padAmount - 1;
-  // for(let i=0;i<gameDim;i++) {
-  //   let r = row[i]; // row value 
-  //   if(r!==0) {
-  //     let s = squashed[i-spaces-postSpaces-1];
-
-  //     if(r===s) {
-  //       console.log('aa');
-  //       zeroMap[i] = i+postSpaces;
-  //     } else if( r === (2 * s) ) {
-  //       console.log('bb');
-  //       zeroMap[i] = i+postSpaces;
-  //       i++;
-  //       zeroMap[i] = i+postSpaces;
-  //     } else {
-  //       console.log('ccrsi ',r,s,i);
-  //       console.log('squashed,i,s,i-spaces: ',squashed,i,s,i-spaces);
-  //     }
-
-  //   } else {
-  //     spaces++;
-  //   }
-  // }
-
-  let spaces = padAmount - 1;
-  for(let i=0,j=padAmount;i<gameDim;i++) {
-    let r = row[i]; // row value 
-    if(!r) continue;
-
-    zeroMap[i] = j
-
-    if((j+1)<squashed.length) {
-      j++;
-    }
+    //console.log(i,j)
+    next=nextNonZeroth(row,j);
   }
 
-  let ret = zeroMap.map(x => {return indexMap[x]} );
-  console.log('zeroMap: ',zeroMap);
-//  console.log('animationMap: ',ret);
+  let result = zeros(gameDim);
+  for(let i=0;i<gameDim;i++) {
+    let nth = zeroMap[i];
+    result[nth]+=row[i]; 
+    //console.log('n rn',nth,row[nth])
+    //console.log(result.join('-'));
+  }
+
+  if( indexMap===null ) {
+    console.log(row.join(),'--(',zeroMap.join(),')--',result.join());
+    return;
+  }
+
+  // if(next!=null) {
+  //   for(let i=0;i<gameDim;i++) {
+  //     if(row[i]===row[j]) {
+  //       //squash
+  //     }
+  //   }
+  // }
+  // for( let i=j=0;i<gameDim && j < gameDim;i++) { //only increment j when we write 
+
+  //   //zeroMap[j] = i;
+
+  //   let cur = row[j];
+  //   let nextNonZero = zucc( row, j );
+  //   if( !cur && nextNonZero==null) break;
+
+  //   //moveStep //move if current empty, next not
+  //   zeroMap[j] = **
+
+  //   if( ... ) {
+  //     //SquashStep //squash if current equals next
+  //   } 
+
+  //   //single increment if both exist, but are not equal
+
+  //   //j++;
+  // }
+
+  console.log(zeroMap);
+  let ret = zeroMap.map(x => {return indexMap[gameDim-x]} );
   return ret;
 }
+
+function nextNonZeroth( row, currentIndex ) { //return the next non-zero element
+  for(let i=currentIndex+1;i<row.length;i++) {
+    if(row[i]) {
+      return {
+        index: i,
+        value: row[i]
+      };
+    }
+  }
+  return null;
+}
+
+// function getAnimationMap( row, indexMap ) {
+//   let zeroMap = sequence(gameDim);
+
+//   for(let i=j=gameDim-1;i>=0 && j>=0;i--,j--) {
+//     //let cur = row[j];
+//     let prev = getNextPrevNonZeroth( row, j );
+//     if(!row[j]) continue;
+//     if(prev===null) break;
+
+//     zeroMap[j] = i;
+
+//     console.log(prev);
+//     if(prev!=null && prev.value == row[i]) {
+//       console.log('JJJJJ',j);
+//       j = prev.index;
+//       console.log('assigning index ', prev.index );
+//       zeroMap[j] = i;
+//     }
+//   }
+
+//   // console.log('zeroMap: ',zeroMap);
+//   // console.log('animationMap: ',ret);
+//   let ret = zeroMap.map(x => {return indexMap[x]} );
+//   return ret;
+// }
+
+// function getNextPrevNonZeroth( row, currentIndex ) {
+//   for(let i=currentIndex-1;i>=0;i--) {
+//     if(row[i]) {
+//       // console.log('currentIndex =',currentIndex,'row[',i,'] = ', row[i]);
+//       return {
+//         index: currentIndex - i,
+//         value: row[i]
+//       };
+//     }
+//   }
+//   // console.log('zerothing null');
+//   return null;
+// }
 
 function zeros(len) {
   if(typeof len === 'undefined' || len < 1 ) {
@@ -376,6 +436,15 @@ function leftPad( arr, amount ) {
   }
   return zeros( amount ).concat( arr );
 }
+
+(function test() {
+  getTransitionMap( [2,0,4,8], null);
+  getTransitionMap( [0,2,0,2], null);
+  getTransitionMap( [0,2,2,4], null);
+  getTransitionMap( [2,0,0,0], null);
+  getTransitionMap( [0,0,0,2], null);
+})()
+
 
 </script>
 </html>
