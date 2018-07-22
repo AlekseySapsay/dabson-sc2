@@ -300,14 +300,26 @@ function getTransitionMap( row, showLogging=false ) {
   let result = zeros(gameDim);      // values
   let noZeros = 0;
 
+  //compress
   for(let i=gameDim-1;i>=0;i--) {
-    if(!row[transMap[i]]) {
+    let cur = row[transMap[i]];
+    if(!cur) {
       noZeros++;
     } else {
       transMap[i]+=noZeros;
     }
-
   }
+
+  //squash adjacent
+  for(let i=gameDim-1;i>=0;i--) {
+    let cur = row[transMap[i]];
+    let next = row[transMap[i+1]];
+
+    if(next && next===cur) {
+      transMap[i]++;
+    }
+  }
+
 
   // for(let i=gameDim-2;i>=0;i--) {
   //   let curVal = row[transMap[i]];
