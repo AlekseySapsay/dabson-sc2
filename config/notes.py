@@ -298,3 +298,4 @@ function moveRight() {
 }
 
 perhaps make a transition map 
+the fail condition is a bit premature perhaps..

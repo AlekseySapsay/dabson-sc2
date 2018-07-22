@@ -25,6 +25,7 @@ if(cssCanvasPixelWidth && cssCanvasPixelHeight) {
 }
 
 const gameDim = 4;
+const gameSize = gameDim * gameDim;
 const boxMargin = 2 * parseInt(window.getComputedStyle(canvasEl).getPropertyValue('border-width').slice(0,-2));
 const boxWidth = canvasEl.width / gameDim;
 const boxHeight = canvasEl.height / gameDim;
@@ -33,6 +34,7 @@ const winCondition = 2048;
 const fps = 50;
 const transitionTicks = 10;
 const millisecs = 1000/fps;
+const transitionsEnabled = false;
 
 var gameInterval;
 var gameIterator = 0;
@@ -42,7 +44,7 @@ var gameState = [
   0, 0, 0, 0,
   0, 0, 0, 0,
   0, 0, 0, 0 
-];
+]; // aka zeros(16)
 var oldState;
 var transitionState;
 
@@ -56,7 +58,7 @@ function isPlaying() {
 }
 
 function isTransitioning() {
-  return gameIterator < 0;
+  return transitionsEnabled && gameIterator < 0;
 }
 
 function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
@@ -74,7 +76,7 @@ function drawBox(ctx,xPos,yPos,boxWidth,boxHeight,val) {
 function updateFrame() {
   ctx.fillStyle="#eee";
   ctx.fillRect(0,0,canvasEl.width,canvasEl.height);
-  for(let i=0;i<gameState.length;i++) {
+  for(let i=0;i<gameSize;i++) {
     let xPos = boxWidth * ( i % gameDim );
     let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
     drawBox(ctx,xPos,yPos,boxWidth,boxHeight,gameState[i] * !isTransitioning());
@@ -82,7 +84,7 @@ function updateFrame() {
 
   //if transitioning, draw transition boxes
   if( isTransitioning() ) {
-    for(let i=0;i<gameState.length;i++) {
+    for(let i=0;i<gameSize;i++) {
       let cur = gameState[i];
       if(cur) {
         let xPos = boxWidth * ( i % gameDim );
@@ -222,6 +224,7 @@ function endGame(status) {
  * for each i iteration, it does a full shiftCombine
  */
 function mapIndexAndStack(lambda) {
+  oldState = gameState.slice();
   for(let i=0;i<gameDim;i++) {
     let indexMap = new Array();
     for(let j=0;j<gameDim;j++) {
@@ -241,44 +244,16 @@ function shiftCombine(arr, indexMap) {
   if(indexMap.length != gameDim ) {
     throw 'Bad shiftCombine() call. IndexMap size must match gameDim';
   }
-  let transitionArray = zeros(gameDim);
-  let ret = new Array();
-  let ret2 = new Array();
 
-  // Stack empty space
-  for( i in indexMap ) {
-    let cur = arr[indexMap[i]];
-    if(cur) {
-      ret.push(cur);
-    }
-  }
+  let row = indexMap.slice().map( i => arr[i] );
 
-  // Squash adjacent pairs, starting from right
-  for(let i=ret.length-1;i>0;i--){
-    let cur = ret[i];
-    let prev= ret[i-1];
+  let squashed = squash(row);
 
-    if(cur!=0 && cur===prev){ 
-      ret[i] = cur * 2;
-      ret[i-1] = 0;
-    }
-  }
-
-  // Stack again
-  for( i in ret ) {;
-    if(ret[i]) {
-      ret2.push(ret[i]);
-    }
-  }
-
-  // Left-pad array and assign
-  ret = zeros( gameDim - ret2.length ).concat( ret2 );
-  oldState = gameState.slice();; 
+  // Left-pad
+  let ret = zeros( gameDim - squashed.length ).concat( squashed );
   for( i in ret ) {
     arr[indexMap[i]] = ret[i];
   }
-
-  // @todo: somehow make the transition matrix, then incorporate it into animations
 }
 
 function zeros(len) {
@@ -287,5 +262,32 @@ function zeros(len) {
   }
   return new Array(len+1).join('0').split('').map(parseFloat);
 }
+
+//remove all zero & falsy values from an array
+function compress(arr) {
+  let ret = new Array();
+  for( i in arr ) {
+    if( arr[i] ) {
+      ret.push(arr[i]);
+    }
+  }
+  return ret;
+}
+
+// Compress, combine all adjacent like pairs (from right to left), compress, return
+function squash(row) {
+  let unsquashed = compress(row);
+  for(let i=unsquashed.length-1;i>0;i--){
+    let cur = unsquashed[i];
+    let prev= unsquashed[i-1];
+
+    if(cur!=0 && cur===prev){ 
+      unsquashed[i] = cur * 2;
+      unsquashed[i-1] = 0;
+    }
+  }
+  return compress(unsquashed);
+}
+
 </script>
 </html>
