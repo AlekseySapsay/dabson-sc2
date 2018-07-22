@@ -310,7 +310,8 @@ function getTransitionMap( row, showLogging=false ) {
     transMap[i]=Math.min(transMap[i]+noZeros,lim);
   }
 
-  if(showLogging) console.log(transMap.join('*'));
+  //squish Broken 4-0-0-4 :(
+  //if(showLogging) console.log(transMap.join('*'));
   for(let i=lim;i>=0;i--) {
     let curI = transMap[i];
     let preI = curI-1;
@@ -318,12 +319,23 @@ function getTransitionMap( row, showLogging=false ) {
     let prev = row[preI];
 
     if(cur && cur===prev) {
-      if(showLogging) console.log('squishy',prev,'[',preI,'] into ',cur,'[',curI,']');
+      //if(showLogging) console.log('squishy',prev,'[',preI,'] into ',cur,'[',curI,']');
       transMap[curI-1]++;
       i--;
     }
   }
   if(showLogging) console.log(transMap.join('~'));
+
+  //reCompress
+  // noZeros=0;
+  // for(let i=lim;i>=0;i--) {
+  //   let cur = row[transMap[i]];
+  //   if(!cur) {
+  //     noZeros++;
+  //   if(showLogging) console.log('RECOMP called!', noZeros)
+  //   }
+  //   transMap[i]=Math.min(transMap[i]+noZeros,lim);
+  // }
 
 /* ok
   if(showLogging) console.log(transMap.join('*'));
