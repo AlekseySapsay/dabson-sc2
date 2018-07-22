@@ -273,8 +273,11 @@ function getTransitionMap( row, showLogging=false ) {
 
   for(let i=1;i<gameDim;i++) {
     let ii = gameDim-1-i;
+    let curVal = row[transMap[ii]];
+    let nextVal = row[transMap[ii+1]];
+    if(!curVal) continue;
 
-    if(row[transMap[ii+1]]===row[transMap[ii]] || !row[transMap[ii+1]] && !!row[transMap[ii]]) {
+    if( !nextVal || curVal==nextVal ) {
       transMap[ii]++;
     }
   }
