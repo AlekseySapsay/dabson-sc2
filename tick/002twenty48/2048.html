@@ -283,18 +283,18 @@ function getTransitionMap( row, showLogging=false ) {
   }
 
   //if(showLogging) console.log(transMap.join('*'));
-  //squash adjacent
-  // noZeros = 0;
-  // for(let i=gameDim-1;i>=0;i--) {
-  //   let cur = row[transMap[i]];
-  //   let next = row[transMap[i]+1];
 
-  //   if(next && next===cur) {
-  //     //console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
-  //     noZeros++; //squishy!
-  //   }
-  //   transMap[i]+=noZeros;
-  // }
+  noZeros = 0;
+  for(let i=gameDim-1;i>=0;i--) {
+    let cur = row[transMap[i]];
+    let next = row[transMap[i]+1];
+
+    if(next && next===cur) {
+      //console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
+      noZeros++; //squishy!
+    }
+    transMap[i]+=noZeros;
+  }
 
 
   // if( showLogging ) {
@@ -344,15 +344,15 @@ function squash(row) {
   let unsquashed = compress(row);
 
   //@todo revert this bit by bit
-  // for(let i=unsquashed.length-1;i>0;i--){
-  //   let cur = unsquashed[i];
-  //   let prev= unsquashed[i-1];
+  for(let i=unsquashed.length-1;i>0;i--){
+    let cur = unsquashed[i];
+    let prev= unsquashed[i-1];
 
-  //   if(cur!=0 && cur===prev){ 
-  //     unsquashed[i] = cur * 2;
-  //     unsquashed[i-1] = 0;
-  //   }
-  // }
+    if(cur!=0 && cur===prev){ 
+      unsquashed[i] = cur * 2;
+      unsquashed[i-1] = 0;
+    }
+  }
   // let unsquashed = compress(unsquashed);
   return leftPad(unsquashed, gameDim-unsquashed.length);
 }
