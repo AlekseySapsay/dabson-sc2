@@ -284,18 +284,18 @@ function getTransitionMap( row, showLogging=false ) {
 
   //if(showLogging) console.log(transMap.join('*'));
 
-  noZeros = 0;
-  for(let i=gameDim-1;i>=0;i--) {
-    let cur = row[transMap[i]];
-    let next = row[transMap[i]+1];
+  //noZeros = 0;
+  //only merge adjacent cells, and merge them right
+  for(let i=gameDim-2;i>=0;i--) {
+    let cur = row[i];
+    let next = row[i+1];
 
     if(next && next===cur) {
       //console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
-      noZeros++; //squishy!
-    }
-    transMap[i]+=noZeros;
+      //noZeros++; //squishy!
+      transMap[i]++;
+    } //=noZeros;
   }
-
 
   // if( showLogging ) {
   //   console.log(row.join(),'--(',transMap.join(),')--',result.join());
