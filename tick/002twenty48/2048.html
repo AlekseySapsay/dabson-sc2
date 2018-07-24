@@ -271,6 +271,7 @@ function getTransitionMap( row, showLogging=false ) {
   let transMap = sequence(gameDim); // index mappings
 
   //we only move right, merge first
+  //wombo combo
   let lastNonZeroIndex = gameDim-1;
   let wasMerged = false;
   for(let i=gameDim-2;i>=0;i--) {
@@ -296,17 +297,48 @@ function getTransitionMap( row, showLogging=false ) {
     result[transMap[i]]+=row[i]; 
   }
 
-  //compress
+  if(showLogging) console.log(transMap.join('+'))
+
+  // let last = gameDim-1;
+  // let buff = 0;
+
   let noZeros = 0;
+  wasMerged = false;
   for(let i=gameDim-1;i>=0;i--) {
-    let cur = result[i];
-    if(!cur) {
+    if(result[i]===0) {
       noZeros++;
-    } else if(i!=gameDim-1){
-      transMap[i]+=noZeros; //Math.min(transMap[i]+noZeros,gameDim-1);
+      continue;
     }
-    //transMap[i]=Math.min(transMap[i]+noZeros,lim);
-  }
+
+    transMap[i]+=noZeros;
+  } 
+
+  // //compress
+  // let noZeros = 0;
+  // for(let i=gameDim-1;i>=0;i--) {
+  //   let cur = result[i];
+  //   if(!cur) {
+  //     noZeros++;
+  //   } else if(i!=gameDim-1){
+  //     transMap[i]+=noZeros; //Math.min(transMap[i]+noZeros,gameDim-1);
+  //     if(row[i]*2===result[i]) {
+  //       console.log('its TWO!');
+  //       //in the case that this was a merged block, we also need to shift the mergee and skip
+  //       for(let j=i;j>=0;j--) {
+  //         if(!result[j]) {
+  //           noZeros++;
+  //         } else if(row[j]*2===result[i]) {
+  //           transMap[j]+=noZeros;
+  //           i=j;
+  //           console.log('skiped a few');
+  //         }
+  //       }
+  //     }
+
+  //   }
+  //   //transMap[i]=Math.min(transMap[i]+noZeros,lim);
+  // }
+  if(showLogging) console.log(transMap.join('~'))
 
   result = zeros(gameDim);
   for(let i=0;i<gameDim;i++) {

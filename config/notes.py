@@ -393,3 +393,10 @@ GOAL:
   getTransitionMap()
 ..should produce the same results. 
 
+
+    let diff = transMap[i+1]-transMap[i];
+    if(diff>1 || result[i+1]==0) {
+      buff=1;
+    }
+    transMap[i]+=buff;
+    last = transMap[i];
