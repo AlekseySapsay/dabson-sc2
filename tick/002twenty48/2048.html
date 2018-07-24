@@ -281,7 +281,7 @@ function getTransitionMap( row, showLogging=false ) {
     transMap[i]=Math.min(transMap[i]+noZeros,lim);
   }
 
-  //if(showLogging) console.log(transMap.join('*'));
+  if(showLogging) console.log(transMap.join('*'));
 
   // its different, but not incorrect
   //noZeros = 0;
@@ -300,6 +300,8 @@ function getTransitionMap( row, showLogging=false ) {
     } //=noZeros;
     justMerged = false;
   }
+
+if( showLogging ) console.log( transMap.join('~') );
 
   //compress
   // noZeros=0;
