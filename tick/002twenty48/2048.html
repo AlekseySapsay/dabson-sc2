@@ -286,15 +286,19 @@ function getTransitionMap( row, showLogging=false ) {
   // its different, but not incorrect
   //noZeros = 0;
   //only merge adjacent cells, and merge them right
+  let justMerged = false;
   for(let i=gameDim-2;i>=0;i--) {
     let cur = row[i];
     let next = row[i+1];
 
-    if(next && next===cur) {
+    if(!justMerged && next && next===cur) {
       //console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
       //noZeros++; //squishy!
       transMap[i]++;
+      justMerged=true;
+      continue;
     } //=noZeros;
+    justMerged = false;
   }
 
   //compress
