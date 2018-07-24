@@ -268,59 +268,47 @@ function shiftCombine(arr, indexMap) {
 }
 
 function getTransitionMap( row, showLogging=false ) {
-  let lim = gameDim-1;
   let transMap = sequence(gameDim); // index mappings
-  let noZeros = 0;
 
-  //compress
-  for(let i=lim;i>=0;i--) {
-    let cur = row[transMap[i]];
-    if(!cur) {
-      noZeros++;
-    }
-    transMap[i]=Math.min(transMap[i]+noZeros,lim);
-  }
-
-  if(showLogging) console.log(transMap.join('*'));
-
-  // its different, but not incorrect
-  //noZeros = 0;
-  //only merge adjacent cells, and merge them right
-  let justMerged = false;
+  //we only move right, merge first
+  let lastNonZeroIndex = gameDim-1;
+  let wasMerged = false;
   for(let i=gameDim-2;i>=0;i--) {
     let cur = row[i];
-    let next = row[i+1];
+    let next = row[lastNonZeroIndex];
 
-    if(!justMerged && next && next===cur) {
-      //console.log('squishy',cur,'[',transMap[i],'] into ',next,'[',transMap[i]+1,']');
-      //noZeros++; //squishy!
-      transMap[i]++;
-      justMerged=true;
+    if(cur && !wasMerged && cur===next) {
+      transMap[i] = lastNonZeroIndex;
+      lastNonZeroIndex = i;
+      wasMerged = true;
       continue;
-    } //=noZeros;
-    justMerged = false;
+    }
+
+    if(cur) {      
+      lastNonZeroIndex = i;
+    }
+
+    wasMerged = false;
   }
 
-if( showLogging ) console.log( transMap.join('~') );
+  let result = zeros(gameDim);
+  for(let i=0;i<gameDim;i++) {
+    result[transMap[i]]+=row[i]; 
+  }
 
   //compress
-  // noZeros=0;
-  // for(let i=lim;i>=0;i--) {
-  //   let cur = row[transMap[i]];
-  //   if(!cur) {
-  //     noZeros++;
-  //   }
-  //   transMap[i]=Math.min(transMap[i]+noZeros,lim);
-  // }
+  let noZeros = 0;
+  for(let i=gameDim-1;i>=0;i--) {
+    let cur = result[i];
+    if(!cur) {
+      noZeros++;
+    } else if(i!=gameDim-1){
+      transMap[i]+=noZeros; //Math.min(transMap[i]+noZeros,gameDim-1);
+    }
+    //transMap[i]=Math.min(transMap[i]+noZeros,lim);
+  }
 
-  // if( showLogging ) {
-  //   console.log(row.join(),'--(',transMap.join(),')--',result.join());
-  //   return;
-  // }
-
-  //create result and return
-
-  let result = zeros(gameDim);
+  result = zeros(gameDim);
   for(let i=0;i<gameDim;i++) {
     result[transMap[i]]+=row[i]; 
   }
@@ -370,7 +358,7 @@ function squash(row) {
       unsquashed[i-1] = 0;
     }
   }
-  //unsquashed = compress(unsquashed);
+  unsquashed = compress(unsquashed);
   return leftPad(unsquashed, gameDim-unsquashed.length);
 }
 
