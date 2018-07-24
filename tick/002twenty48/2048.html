@@ -306,6 +306,9 @@ function getTransitionMap( row, showLogging=false ) {
   wasMerged = false;
   for(let i=gameDim-1;i>=0;i--) {
     if(result[i]===0) {
+      if(i<(gameDim-2) && row[i]!==0 && result[i+1]===2*row[i]) {//this was a merge step
+        transMap[i]+=noZeros;
+      }
       noZeros++;
       continue;
     }
