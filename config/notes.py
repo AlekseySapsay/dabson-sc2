@@ -385,4 +385,11 @@ jamin'' Yahel and Infected Mushroom 30:00 + 54 * * * * *
 
 0-8-8-8 aint being squished 
 
-there's a reason you cant squish from the right - an odd number will sqish the wrong way
+there's a reason you cant squish from the right - an odd number will sqish the wrong way'
+
+GOAL: 
+  squash() 
+    and
+  getTransitionMap()
+..should produce the same results. 
+
