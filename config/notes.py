@@ -400,3 +400,27 @@ GOAL:
     }
     transMap[i]+=buff;
     last = transMap[i];
+    ------
+
+
+  // let last = gameDim-1;
+  // let buff = 0;
+  let noZeros = 0;
+  for(let i=gameDim-1;i>=0;i--) {
+    if(result[i]===0) {
+      noZeros++;
+      continue;
+    }
+    if(i>0 && transMap[i-1]===transMap[i]) {
+      transMap[i]+=noZeros;
+      noZeros++;
+      continue;
+    }
+
+    if(i===gameDim-1) {
+      continue;
+    }
+    
+    transMap[i]+=noZeros;
+
+ aaa
