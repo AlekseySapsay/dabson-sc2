@@ -92,14 +92,32 @@ function updateFrame() {
     for(let i=0;i<gameSize;i++) {
       let cur = gameState[i];
       if(cur) {
-        let xPos = boxWidth * ( i % gameDim );
-        let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
-        drawBox(ctx,xPos+Math.abs(gameIterator)*4,yPos,boxWidth,boxHeight,gameState[i],cur);
+        //let xTo;
+        //let yTo;
+
+        let from = stateIndexToCoord( oldState[i] );
+        let to = stateIndexToCoord( animateState[i] );
+
+        // let xPos = boxWidth * ( i % gameDim );
+        // let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
+
+        let proportionAlong = Math.abs(gameIterator) / transitionTicks;
+        let x = from.x - to.x * proportionAlong;
+        let y = from.y - to.y * proportionAlong;
+
+        drawBox(ctx,x,y,boxWidth,boxHeight,gameState[i],cur);
       }
     }
   }
 
   gameIterator++;
+}
+
+function stateIndexToCoord( index ) {
+  return {
+    x: (index % gameDim) * boxWidth,
+    y: ( Math.floor( index / gameDim ) % gameDim ) * boxHeight
+  };
 }
 
 window.onkeydown = function(e) {
@@ -256,6 +274,7 @@ function shiftCombine(arr, indexMap) {
   let row = indexMap.slice().map( i => arr[i] );
   let animateRow = getTransitionMap( row );
 
+  //@todo: can replace with leSquash
   let ret=squashed = squash( row ); //here is the guaranted-to-work stateShift function, but it doesnt produce a transition map which is kinda what we want
   //let padAmount = gameDim - squashed.length;
   //let ret = leftPad( squashed, padAmount ); //PUT THIS IN FUNC
