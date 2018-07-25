@@ -32,7 +32,7 @@ const boxHeight = canvasEl.height / gameDim;
 const spawnCount = 2;
 const winCondition = 2048;
 const fps = 50;
-const transitionTicks = 100;
+const transitionTicks = 10;
 const millisecs = 1000/fps;
 const isAnimationEnabled = true;
 
@@ -92,23 +92,30 @@ function updateFrame() {
     for(let i=0;i<gameSize;i++) {
       let cur = oldState[i];
 
+      // cur is the value!
+
       if( cur && animateState[i]===i) {
         //draw stationary barnicle
-        pos = stateIndexToCoord( oldState[i] );
+        pos = stateIndexToCoord( i );
         drawBox(ctx,pos.x,pos.y,boxWidth,boxHeight,oldState[i],cur);
       } else if(cur && animateState[i]!==i) {
         //let xTo;
         //let yTo;
 
-        let from = stateIndexToCoord( oldState[i] );
-        let to = stateIndexToCoord( animateState[i] );
+        let from = stateIndexToCoord( i );
+        let to = stateIndexToCoord( animateState[i] ); //animateState[i] walk before run
+        //console.log('going from (x,y)->(x,y): (',from.x,',',from.y,') -> (',to.x,',',to.y,')');
+        //console.log('oldi -> animi',oldState[i],animateState[i])
 
         // let xPos = boxWidth * ( i % gameDim );
         // let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
 
-        let proportionAlong = Math.abs(gameIterator) / transitionTicks;
-        let x = from.x - to.x * proportionAlong;
-        let y = from.y - to.y * proportionAlong;
+        let proportionAlong = 1-(Math.abs(gameIterator) / transitionTicks);
+        let delx = to.x - from.x;
+        let dely = to.y - from.y;
+        let x =  from.x + delx * proportionAlong;
+        let y = from.y + dely * proportionAlong;
+        //console.log('prop',proportionAlong);
 
         //ctx,x,y,width,height,val
         drawBox(ctx,x,y,boxWidth,boxHeight,oldState[i],cur);
@@ -348,7 +355,6 @@ function getTransitionMap( row ) {
 
 
   let noZeros = 0;
-  wasMerged = false; //@todo rem me
   for(let i=gameDim-1;i>=0;i--) {
     if(result[i]===0) {
       if(row[i]!==0 && result[i+1]===2*row[i]) {//this was a merge step
@@ -362,11 +368,6 @@ function getTransitionMap( row ) {
   }
 
   return transMap;
-  // result = zeros(gameDim);
-  // for(let i=0;i<gameDim;i++) {
-  //   result[transMap[i]]+=row[i]; 
-  // }
-  // return result;
 }
 
 function zeros(len) {
