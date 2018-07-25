@@ -268,6 +268,11 @@ function shiftCombine(arr, indexMap) {
 }
 
 function getTransitionMap( row, showLogging=false ) {
+  //special case move+merge 
+  if(row.length===4 && row[0]===row[2] && !row[1] && !row[3]) {
+    //transitionMap [3,1,3,3];
+    return [0,0,0,row[0]*2];
+  }
   let transMap = sequence(gameDim); // index mappings
 
   //we only move right, merge first
