@@ -267,11 +267,20 @@ function shiftCombine(arr, indexMap) {
   }
 }
 
-function getTransitionMap( row, showLogging=false ) {
+function leSquash( row ) {
+  let transMap = getTransitionMap( row );
+  let result = zeros(gameDim);
+  for(let i=0;i<gameDim;i++) {
+    result[transMap[i]]+=row[i]; 
+  }
+  return result;
+}
+
+function getTransitionMap( row ) {
   //special case move+merge 
   if(row.length===4 && row[0]===row[2] && !row[1] && !row[3]) {
-    //transitionMap [3,1,3,3];
-    return [0,0,0,row[0]*2];
+    return [3,1,3,3];
+    //return [0,0,0,row[0]*2];
   }
   let transMap = sequence(gameDim); // index mappings
 
@@ -302,8 +311,6 @@ function getTransitionMap( row, showLogging=false ) {
     result[transMap[i]]+=row[i]; 
   }
 
-  if(showLogging) console.log(transMap.join('+'))
-
 
   let noZeros = 0;
   wasMerged = false; //@todo rem me
@@ -317,16 +324,14 @@ function getTransitionMap( row, showLogging=false ) {
     }
 
     transMap[i]+=noZeros;
-  } 
-
-  if(showLogging) console.log(transMap.join('~'))
-
-  result = zeros(gameDim);
-  for(let i=0;i<gameDim;i++) {
-    result[transMap[i]]+=row[i]; 
   }
-  return result;
 
+  return transMap;
+  // result = zeros(gameDim);
+  // for(let i=0;i<gameDim;i++) {
+  //   result[transMap[i]]+=row[i]; 
+  // }
+  // return result;
 }
 
 function zeros(len) {
@@ -382,15 +387,8 @@ function leftPad( arr, amount ) {
   return zeros( amount ).concat( arr );
 }
 
-(function test() {
-  //getTransitionMap( [2,0,4,8], null);
-  //getTransitionMap( [0,2,0,2], null);
-  //getTransitionMap( [0,2,2,4], null);
-  //getTransitionMap( [2,0,0,0], null);
-  //getTransitionMap( [0,0,0,2], null);
-
+function test() {
   console.log('filthyboi test');
-
   let passCount=failCount=0;
 
   for(let i=0;i<256;i++) {
@@ -404,22 +402,20 @@ function leftPad( arr, amount ) {
     //console.log(testInput);
 
     let squashOutput = squash(testInput);
-    let transOutput = getTransitionMap(testInput);
+    let transOutput = leSquash(testInput);
 
     if( arraysEqual(squashOutput,transOutput) ) {
       console.log('input PASSED ',testInput.join('-'),' :: ',squashOutput.join('-'),'===',transOutput.join('-'));
       passCount++;
     } else {
       console.error('input failed',testInput.join('-'),' :: s/t =',squashOutput.join('-'),'!==',transOutput.join('-'));
-      getTransitionMap(testInput, true);
       failCount++;
     }
   }
   console.log('-----')
   console.log('passed',passCount);
   console.log('failed',failCount);
-})()
-
+}
 
 //@todo test function, remove
 function arraysEqual(a, b) {
