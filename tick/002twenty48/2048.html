@@ -32,7 +32,7 @@ const boxHeight = canvasEl.height / gameDim;
 const spawnCount = 2;
 const winCondition = 2048;
 const fps = 50;
-const transitionTicks = 10;
+const transitionTicks = 100;
 const millisecs = 1000/fps;
 const isAnimationEnabled = true;
 
@@ -90,8 +90,13 @@ function updateFrame() {
   //if transitioning, draw transition boxes
   if( isTransitioning() ) {
     for(let i=0;i<gameSize;i++) {
-      let cur = gameState[i];
-      if(cur) {
+      let cur = oldState[i];
+
+      if( cur && animateState[i]===i) {
+        //draw stationary barnicle
+        pos = stateIndexToCoord( oldState[i] );
+        drawBox(ctx,pos.x,pos.y,boxWidth,boxHeight,oldState[i],cur);
+      } else if(cur && animateState[i]!==i) {
         //let xTo;
         //let yTo;
 
@@ -105,8 +110,9 @@ function updateFrame() {
         let x = from.x - to.x * proportionAlong;
         let y = from.y - to.y * proportionAlong;
 
-        drawBox(ctx,x,y,boxWidth,boxHeight,gameState[i],cur);
-      }
+        //ctx,x,y,width,height,val
+        drawBox(ctx,x,y,boxWidth,boxHeight,oldState[i],cur);
+      } 
     }
   }
 
@@ -201,6 +207,12 @@ function moveLeft() {
 }
 function moveRight() {
   mapIndexAndStack( (i,j,k) => { return j + i * gameDim } );
+
+
+    console.log('old State',oldState);
+    console.log('animate State',animateState);
+    console.log('game State',gameState);
+
   repopulate();
 }
 
@@ -248,9 +260,9 @@ function endGame(status) {
  */
 function mapIndexAndStack(lambda) {
   oldState = gameState.slice();
-  animateState = zeros(gameSize);
+  animateState = sequence(gameSize);
 
-  console.log('---');
+  //console.log('---');
   for(let i=0;i<gameDim;i++) {
     let indexMap = new Array();
     for(let j=0;j<gameDim;j++) {
@@ -282,7 +294,11 @@ function shiftCombine(arr, indexMap) {
   for( i in ret ) {
     let x = indexMap[i];
     arr[x] = ret[i];
-    animateState[x] = animateRow[i];
+  }
+  for(let i=0;i<animateRow.length;i++) {
+    if(row[i]) {
+      animateState[i] = indexMap[ animateRow[i] ];
+    }
   }
 }
 
