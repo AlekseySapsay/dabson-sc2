@@ -32,7 +32,7 @@ const boxHeight = canvasEl.height / gameDim;
 const spawnCount = 2;
 const winCondition = 2048;
 const fps = 50;
-const transitionTicks = 10;
+const transitionTicks = 20;
 const millisecs = 1000/fps;
 const isAnimationEnabled = true;
 
@@ -89,8 +89,11 @@ function updateFrame() {
 
   //if transitioning, draw transition boxes
   if( isTransitioning() ) {
+      //ctx.fillStyle="#fff"; //if trace
+      //ctx.fillRect(0,0,600,600); //if trace
     for(let i=0;i<gameSize;i++) {
       let cur = oldState[i];
+
 
       // cur is the value!
 
@@ -106,7 +109,6 @@ function updateFrame() {
         let to = stateIndexToCoord( animateState[i] ); //animateState[i] walk before run
         //console.log('going from (x,y)->(x,y): (',from.x,',',from.y,') -> (',to.x,',',to.y,')');
         //console.log('oldi -> animi',oldState[i],animateState[i])
-
         // let xPos = boxWidth * ( i % gameDim );
         // let yPos = boxHeight * ( Math.floor( i / gameDim ) % gameDim );
 
@@ -115,10 +117,9 @@ function updateFrame() {
         let dely = to.y - from.y;
         let x =  from.x + delx * proportionAlong;
         let y = from.y + dely * proportionAlong;
-        //console.log('prop',proportionAlong);
 
-        //ctx,x,y,width,height,val
         drawBox(ctx,x,y,boxWidth,boxHeight,oldState[i],cur);
+        //drawLine(from.x,from.y,to.x,to.y); //if trace
       } 
     }
   }
@@ -294,7 +295,7 @@ function shiftCombine(arr, indexMap) {
   let animateRow = getTransitionMap( row );
 
   //@todo: can replace with leSquash
-  let ret=squashed = squash( row ); //here is the guaranted-to-work stateShift function, but it doesnt produce a transition map which is kinda what we want
+  let ret=leSquash(row); //=squashed = squash( row ); //here is the guaranted-to-work stateShift function, but it doesnt produce a transition map which is kinda what we want
   //let padAmount = gameDim - squashed.length;
   //let ret = leftPad( squashed, padAmount ); //PUT THIS IN FUNC
 
@@ -304,7 +305,7 @@ function shiftCombine(arr, indexMap) {
   }
   for(let i=0;i<animateRow.length;i++) {
     if(row[i]) {
-      animateState[i] = indexMap[ animateRow[i] ];
+      animateState[indexMap[i]] = indexMap[ animateRow[i] ];
     }
   }
 }
@@ -463,6 +464,19 @@ function arraysEqual(a, b) {
     if (a[i] !== b[i]) return false;
   }
   return true;
+}
+
+function drawLine( fromX, fromY, toX, toY ) {
+  let delx = boxWidth/2;
+  let dely = boxHeight/2;
+
+  ctx.beginPath();
+  ctx.moveTo( fromX+delx, fromY+dely);
+  ctx.lineTo( toX+delx, toY+dely );
+  ctx.stroke();
+
+  ctx.fillStyle="#000";
+  ctx.fillRect(toX+delx-5,toY+dely-5,10,10);
 }
 
 </script>
